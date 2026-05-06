@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Run as background agent (no dock icon) -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <!-- App name -->
+    <key>CFBundleName</key>
+    <string>DariSholat</string>
+
+    <key>CFBundleDisplayName</key>
+    <string>DariSholat</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+
+    <key>CFBundleVersion</key>
+    <string>1</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <!-- Location permission -->
+    <key>NSLocationUsageDescription</key>
+    <string>DariSholat needs your location to calculate accurate prayer times for your area.</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>DariSholat needs your location to calculate accurate prayer times for your area.</string>
+
+    <!-- Minimum macOS version -->
+    <key>LSMinimumSystemVersion</key>
+    <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+</dict>
+</plist>

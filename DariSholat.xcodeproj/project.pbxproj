@@ -1,0 +1,526 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04A802DE2FAACA43009198C7 /* DariSholatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */; };
+		04A802E02FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A802DF2FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift */; };
+		DA0002000000000000000001 /* DariSholatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000001 /* DariSholatApp.swift */; };
+		DA0002000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000002 /* ContentView.swift */; };
+		DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000003 /* PrayerTimeViewModel.swift */; };
+		DA0002000000000000000004 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000004 /* LocationManager.swift */; };
+		DA0002000000000000000005 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000005 /* NotificationManager.swift */; };
+		DA0002000000000000000006 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000006 /* VisualEffectView.swift */; };
+		DA0002000000000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000007 /* SettingsView.swift */; };
+		DA0002000000000000000008 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000008 /* AboutView.swift */; };
+		DA0002000000000000000009 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000009 /* Localization.swift */; };
+		DA000200000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
+		DA000200000000000000000D /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = DA0009000000000000000002 /* Adhan */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		04A802E12FAACA43009198C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DA0005000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA0004000000000000000001;
+			remoteInfo = DariSholat;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04A802DB2FAACA43009198C7 /* DariSholatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DariSholatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatUITests.swift; sourceTree = "<group>"; };
+		04A802DF2FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		DA0001000000000000000001 /* DariSholatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatApp.swift; sourceTree = "<group>"; };
+		DA0001000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000003 /* PrayerTimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeViewModel.swift; sourceTree = "<group>"; };
+		DA0001000000000000000004 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		DA0001000000000000000005 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		DA0001000000000000000006 /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000007 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000008 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000009 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		DA000100000000000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA000100000000000000000B /* DariSholat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DariSholat.entitlements; sourceTree = "<group>"; };
+		DA000100000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DA000100000000000000000D /* DariSholat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DariSholat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04A802D82FAACA43009198C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA0006000000000000000003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA000200000000000000000D /* Adhan in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04A802DC2FAACA43009198C7 /* DariSholatUITests */ = {
+			isa = PBXGroup;
+			children = (
+				04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */,
+				04A802DF2FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift */,
+			);
+			path = DariSholatUITests;
+			sourceTree = "<group>";
+		};
+		DA0003000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				DA0003000000000000000002 /* DariSholat */,
+				04A802DC2FAACA43009198C7 /* DariSholatUITests */,
+				DA0003000000000000000003 /* Products */,
+				DA0003000000000000000004 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		DA0003000000000000000002 /* DariSholat */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000001 /* DariSholatApp.swift */,
+				DA0001000000000000000002 /* ContentView.swift */,
+				DA0001000000000000000003 /* PrayerTimeViewModel.swift */,
+				DA0001000000000000000004 /* LocationManager.swift */,
+				DA0001000000000000000005 /* NotificationManager.swift */,
+				DA0001000000000000000006 /* VisualEffectView.swift */,
+				DA0001000000000000000007 /* SettingsView.swift */,
+				DA0001000000000000000008 /* AboutView.swift */,
+				DA0001000000000000000009 /* Localization.swift */,
+				DA000100000000000000000A /* Info.plist */,
+				DA000100000000000000000B /* DariSholat.entitlements */,
+				DA000100000000000000000C /* Assets.xcassets */,
+			);
+			path = DariSholat;
+			sourceTree = "<group>";
+		};
+		DA0003000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DA000100000000000000000D /* DariSholat.app */,
+				04A802DB2FAACA43009198C7 /* DariSholatUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DA0003000000000000000004 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04A802DA2FAACA43009198C7 /* DariSholatUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04A802E52FAACA43009198C7 /* Build configuration list for PBXNativeTarget "DariSholatUITests" */;
+			buildPhases = (
+				04A802D72FAACA43009198C7 /* Sources */,
+				04A802D82FAACA43009198C7 /* Frameworks */,
+				04A802D92FAACA43009198C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04A802E22FAACA43009198C7 /* PBXTargetDependency */,
+			);
+			name = DariSholatUITests;
+			productName = DariSholatUITests;
+			productReference = 04A802DB2FAACA43009198C7 /* DariSholatUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		DA0004000000000000000001 /* DariSholat */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA0008000000000000000001 /* Build configuration list for PBXNativeTarget "DariSholat" */;
+			buildPhases = (
+				DA0006000000000000000001 /* Sources */,
+				DA0006000000000000000002 /* Resources */,
+				DA0006000000000000000003 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DariSholat;
+			packageProductDependencies = (
+				DA0009000000000000000002 /* Adhan */,
+			);
+			productName = DariSholat;
+			productReference = DA000100000000000000000D /* DariSholat.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DA0005000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					04A802DA2FAACA43009198C7 = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = DA0004000000000000000001;
+					};
+					DA0004000000000000000001 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+				};
+			};
+			buildConfigurationList = DA0008000000000000000002 /* Build configuration list for PBXProject "DariSholat" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				id,
+				ar,
+			);
+			mainGroup = DA0003000000000000000001;
+			packageReferences = (
+				DA0009000000000000000001 /* XCRemoteSwiftPackageReference "adhan-swift" */,
+			);
+			productRefGroup = DA0003000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DA0004000000000000000001 /* DariSholat */,
+				04A802DA2FAACA43009198C7 /* DariSholatUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		04A802D92FAACA43009198C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA0006000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA000200000000000000000C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04A802D72FAACA43009198C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04A802DE2FAACA43009198C7 /* DariSholatUITests.swift in Sources */,
+				04A802E02FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA0006000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA0002000000000000000001 /* DariSholatApp.swift in Sources */,
+				DA0002000000000000000002 /* ContentView.swift in Sources */,
+				DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */,
+				DA0002000000000000000004 /* LocationManager.swift in Sources */,
+				DA0002000000000000000005 /* NotificationManager.swift in Sources */,
+				DA0002000000000000000006 /* VisualEffectView.swift in Sources */,
+				DA0002000000000000000007 /* SettingsView.swift in Sources */,
+				DA0002000000000000000008 /* AboutView.swift in Sources */,
+				DA0002000000000000000009 /* Localization.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04A802E22FAACA43009198C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA0004000000000000000001 /* DariSholat */;
+			targetProxy = 04A802E12FAACA43009198C7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		04A802E32FAACA43009198C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UQQ5WRJRS4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wijil.DariSholatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DariSholat;
+			};
+			name = Debug;
+		};
+		04A802E42FAACA43009198C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UQQ5WRJRS4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wijil.DariSholatUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DariSholat;
+			};
+			name = Release;
+		};
+		DA0007000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DariSholat/DariSholat.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DariSholat/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.darisholat.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DA0007000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DariSholat/DariSholat.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DariSholat/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.darisholat.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		DA0007000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DA0007000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04A802E52FAACA43009198C7 /* Build configuration list for PBXNativeTarget "DariSholatUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04A802E32FAACA43009198C7 /* Debug */,
+				04A802E42FAACA43009198C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA0008000000000000000001 /* Build configuration list for PBXNativeTarget "DariSholat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA0007000000000000000001 /* Debug */,
+				DA0007000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA0008000000000000000002 /* Build configuration list for PBXProject "DariSholat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA0007000000000000000003 /* Debug */,
+				DA0007000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DA0009000000000000000001 /* XCRemoteSwiftPackageReference "adhan-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/batoulapps/adhan-swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DA0009000000000000000002 /* Adhan */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA0009000000000000000001 /* XCRemoteSwiftPackageReference "adhan-swift" */;
+			productName = Adhan;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DA0005000000000000000001 /* Project object */;
+}

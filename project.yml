@@ -1,0 +1,41 @@
+name: DariSholat
+options:
+  bundleIdPrefix: com.darisholat
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.2"
+  generateEmptyDirectories: true
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SWIFT_VERSION: "5.9"
+    INFOPLIST_FILE: DariSholat/Info.plist
+    CODE_SIGN_ENTITLEMENTS: DariSholat/DariSholat.entitlements
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  DariSholat:
+    type: application
+    platform: macOS
+    sources:
+      - path: DariSholat
+        excludes:
+          - "Info.plist"
+          - "DariSholat.entitlements"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.darisholat.app
+        INFOPLIST_FILE: DariSholat/Info.plist
+        CODE_SIGN_ENTITLEMENTS: DariSholat/DariSholat.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - package: Adhan
+
+packages:
+  Adhan:
+    url: https://github.com/batoulapps/adhan-swift
+    branch: main
