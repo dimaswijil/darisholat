@@ -22,11 +22,13 @@
 |---|---|
 | 📍 **Lokasi Otomatis** | Mendeteksi kota secara otomatis dan menampilkan waktu sholat berdasarkan koordinat GPS |
 | ⏳ **Hitung Mundur Real-time** | Countdown di menu bar memperlihatkan sisa waktu menuju sholat berikutnya secara langsung (contoh: `Fajr -40:32`) |
+| 📅 **Integrasi Kalender (Events)** | Menyinkronkan jadwal sholat dengan acara/event di kalender bawaan Mac (iCloud Calendar) Anda |
+| 🌍 **Multi-Bahasa (9 Bahasa)** | Dukungan multibahasa: Indonesia, English, Arabic (العربية), Turkish (Türkçe), Japanese (日本語), Kazakh (Қазақша), Persian (فارسی), Urdu (اردو), dan Malay (Melayu) |
+| 🎨 **Personalisasi Tema & UI** | Sesuaikan warna aksen (Accent Color) aplikasi sesuai selera, dengan dukungan penuh mode gelap/terang native macOS |
 | 🕒 **Jadwal Lengkap** | Menampilkan semua waktu sholat: Subuh, Syuruq, Dzuhur, Ashar, Maghrib, dan Isya |
-| 🎨 **Native macOS** | Dibangun dengan SwiftUI, mendukung mode gelap/terang sesuai pengaturan sistem |
-| ⚙️ **Metode Kemenag RI** | Menggunakan metode perhitungan resmi Kementerian Agama Republik Indonesia |
-| 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba agar tidak terlewat saat sedang bekerja |
+| ⚙️ **Metode Kemenag RI & Global** | Menggunakan metode perhitungan dari Kementerian Agama Republik Indonesia maupun standar global lainnya |
 | 🌙 **Mode Hanafi / Syafi'i** | Toggle madhhab yang memengaruhi waktu Ashar (Hanafi lebih akhir dibanding Syafi'i) |
+| 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba agar tidak terlewat saat sedang bekerja |
 | 🌅 **Tampilkan Sholat Sunnah** | Opsi untuk menampilkan waktu sholat-sholat sunnah rawatib |
 
 ---
