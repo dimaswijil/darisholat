@@ -14,6 +14,18 @@
   <img src="https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=flat-square" alt="Active Development">
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Indonesia-red?style=flat-square">
+  <img src="https://img.shields.io/badge/English-blue?style=flat-square">
+  <img src="https://img.shields.io/badge/العربية-success?style=flat-square">
+  <img src="https://img.shields.io/badge/Türkçe-red?style=flat-square">
+  <img src="https://img.shields.io/badge/日本語-critical?style=flat-square">
+  <img src="https://img.shields.io/badge/Қазақша-informational?style=flat-square">
+  <img src="https://img.shields.io/badge/فارسی-success?style=flat-square">
+  <img src="https://img.shields.io/badge/اردو-success?style=flat-square">
+  <img src="https://img.shields.io/badge/Melayu-yellow?style=flat-square">
+</p>
+
 ---
 
 ## ✨ Fitur Utama
@@ -23,7 +35,7 @@
 | 📍 **Lokasi Otomatis** | Mendeteksi kota secara otomatis dan menampilkan waktu sholat berdasarkan koordinat GPS |
 | ⏳ **Hitung Mundur Real-time** | Countdown di menu bar memperlihatkan sisa waktu menuju sholat berikutnya secara langsung (contoh: `Fajr -40:32`) |
 | 📅 **Integrasi Kalender (Events)** | Menyinkronkan jadwal sholat dengan acara/event di kalender bawaan Mac (iCloud Calendar) Anda |
-| 🌍 **Multi-Bahasa (9 Bahasa)** | Dukungan multibahasa: Indonesia, English, Arabic (العربية), Turkish (Türkçe), Japanese (日本語), Kazakh (Қазақша), Persian (فارسی), Urdu (اردو), dan Malay (Melayu) |
+| 🌍 **Multi-Bahasa (9 Bahasa)** | Mendukung bahasa Indonesia, English, Arabic, Turkish, Japanese, Kazakh, Persian, Urdu, dan Malay secara native |
 | 🎨 **Personalisasi Tema & UI** | Sesuaikan warna aksen (Accent Color) aplikasi sesuai selera, dengan dukungan penuh mode gelap/terang native macOS |
 | 🕒 **Jadwal Lengkap** | Menampilkan semua waktu sholat: Subuh, Syuruq, Dzuhur, Ashar, Maghrib, dan Isya |
 | ⚙️ **Metode Kemenag RI & Global** | Menggunakan metode perhitungan dari Kementerian Agama Republik Indonesia maupun standar global lainnya |
