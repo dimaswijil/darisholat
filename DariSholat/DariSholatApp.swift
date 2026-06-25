@@ -15,27 +15,32 @@ struct DariSholatApp: App {
     var body: some Scene {
         MenuBarExtra {
             ContentView(viewModel: prayerViewModel)
-                .frame(width: 260)
+                .frame(width: (prayerViewModel.currentScreen == .settings || (prayerViewModel.currentScreen == .main && prayerViewModel.showCalendarEvents)) ? 500 : 260)
         } label: {
-            menuBarLabel
+            MenuBarLabelView(viewModel: prayerViewModel)
         }
         .menuBarExtraStyle(.window)
     }
+}
 
-    @ViewBuilder
-    private var menuBarLabel: some View {
-        switch prayerViewModel.menuBarStyle {
+struct MenuBarLabelView: View {
+    @ObservedObject var viewModel: PrayerTimeViewModel
+
+    var body: some View {
+        switch viewModel.menuBarStyle {
         case .iconOnly:
-            Image(systemName: "moon.stars.fill")
-        case .countdown, .compact, .prayerTime:
+            Image(systemName: viewModel.nextPrayerIconName)
+                .foregroundColor(viewModel.resolvedAccentColor)
+        case .compact:
             HStack(spacing: 4) {
-                Image(systemName: "moon.stars.fill")
-                if !prayerViewModel.menuBarText.isEmpty {
-                    Text(prayerViewModel.menuBarText)
+                Image(systemName: viewModel.nextPrayerIconName)
+                if !viewModel.menuBarText.isEmpty {
+                    Text(viewModel.menuBarText)
                         .font(.system(size: 12, weight: .medium, design: .monospaced))
                         .monospacedDigit()
                 }
             }
+            .foregroundColor(viewModel.resolvedAccentColor)
         }
     }
 }

@@ -7,9 +7,17 @@
 //
 
 import Foundation
+import SwiftUI
 import Combine
 import Adhan
 import ServiceManagement
+import EventKit
+
+// MARK: - Navigation State
+
+enum AppScreen {
+    case main, settings, about
+}
 
 // MARK: - App Blur Style
 
@@ -38,11 +46,48 @@ enum AppBlurStyle: String, CaseIterable, Identifiable {
 // MARK: - Menu Bar Style
 
 enum MenuBarStyle: String, CaseIterable, Identifiable {
-    case countdown  = "countdown"
-    case prayerTime = "prayerTime"
     case iconOnly   = "iconOnly"
     case compact    = "compact"
     var id: String { rawValue }
+}
+
+// MARK: - Accent Color Preset
+
+enum AppAccentColor: String, CaseIterable, Identifiable {
+    case green  = "green"
+    case blue   = "blue"
+    case purple = "purple"
+    case orange = "orange"
+    case red    = "red"
+    case custom = "custom"
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .green:  return "Green"
+        case .blue:   return "Blue"
+        case .purple: return "Purple"
+        case .orange: return "Orange"
+        case .red:    return "Red"
+        case .custom: return "Custom..."
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .green:  return Color(red: 0.196, green: 0.784, blue: 0.439) // original accent
+        case .blue:   return Color(red: 0.20, green: 0.50, blue: 0.95)
+        case .purple: return Color(red: 0.58, green: 0.34, blue: 0.92)
+        case .orange: return Color(red: 0.95, green: 0.55, blue: 0.20)
+        case .red:    return Color(red: 0.92, green: 0.28, blue: 0.28)
+        case .custom: return .green // placeholder, actual custom color handled separately
+        }
+    }
+
+    var swatchColor: Color {
+        color
+    }
 }
 
 // MARK: - Calculation Method Enum
@@ -116,9 +161,11 @@ struct PrayerScheduleItem: Identifiable {
 class PrayerTimeViewModel: ObservableObject {
 
     // MARK: - Published UI State
-    @Published var menuBarText: String = "darisholat"
+    @Published var menuBarText: String = "DariSholat"
+    @Published var currentScreen: AppScreen = .main
     @Published var countdownText: String = "--:--:--"
     @Published var nextPrayerDisplayName: String = ""
+    @Published var nextPrayerIconName: String = "moon.stars.fill"
     @Published var currentPrayerDisplayName: String = ""
     @Published var prayerSchedule: [PrayerScheduleItem] = []
     @Published var cityName: String = "Mendeteksi..."
@@ -146,6 +193,12 @@ class PrayerTimeViewModel: ObservableObject {
             refreshPrayerTimes()
         }
     }
+    @Published var showCalendarEvents: Bool {
+        didSet {
+            UserDefaults.standard.set(showCalendarEvents, forKey: "showCalendarEvents")
+            if showCalendarEvents { calendarManager.requestAccess() }
+        }
+    }
     @Published var blurStyle: AppBlurStyle {
         didSet { UserDefaults.standard.set(blurStyle.rawValue, forKey: "blurStyle") }
     }
@@ -153,16 +206,32 @@ class PrayerTimeViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(customBlurOpacity, forKey: "customBlurOpacity") }
     }
 
+    // MARK: - Settings: Accent Color
+    @Published var appAccentColor: AppAccentColor {
+        didSet { UserDefaults.standard.set(appAccentColor.rawValue, forKey: "appAccentColor") }
+    }
+    @Published var customAccentR: Double {
+        didSet { UserDefaults.standard.set(customAccentR, forKey: "customAccentR") }
+    }
+    @Published var customAccentG: Double {
+        didSet { UserDefaults.standard.set(customAccentG, forKey: "customAccentG") }
+    }
+    @Published var customAccentB: Double {
+        didSet { UserDefaults.standard.set(customAccentB, forKey: "customAccentB") }
+    }
+
+    /// The resolved accent color based on preset or custom RGB
+    var resolvedAccentColor: Color {
+        if appAccentColor == .custom {
+            return Color(red: customAccentR, green: customAccentG, blue: customAccentB)
+        }
+        return appAccentColor.color
+    }
+
     // MARK: - Settings: Calculation
     @Published var selectedMethod: DariSholatMethod {
         didSet {
             UserDefaults.standard.set(selectedMethod.rawValue, forKey: "calculationMethod")
-            refreshPrayerTimes()
-        }
-    }
-    @Published var usesHanafi: Bool {
-        didSet {
-            UserDefaults.standard.set(usesHanafi, forKey: "usesHanafi")
             refreshPrayerTimes()
         }
     }
@@ -186,12 +255,31 @@ class PrayerTimeViewModel: ObservableObject {
     // MARK: - Managers
     private var locationManager = LocationManager()
     var notificationManager = NotificationManager()
+    var calendarManager = CalendarManager()
+
+    // MARK: - Ramadan Countdown
+    @Published var daysToRamadan: Int = 0
+    @Published var ramadanCountdownText: String = ""
+    @Published var ramadanDateTooltip: String = ""
+    @Published var isCurrentlyRamadan: Bool = false
+
+    // MARK: - Calendar Events
+    @Published var upcomingEvents: [CalendarEventItem] = []
+    @Published var nextEventCountdown: String = ""
+    @Published var isCalendarAuthorized: Bool = false
+    @Published var availableCalendars: [EKCalendar] = []
+    @Published var selectedCalendarIdentifiers: Set<String> = []
 
     // MARK: - Private
     private var timerCancellable: AnyCancellable?
     private var locationCancellable: AnyCancellable?
     private var cityCancellable: AnyCancellable?
+    private var calendarCancellable: AnyCancellable?
+    private var calendarAuthCancellable: AnyCancellable?
+    private var calendarCalendarsCancellable: AnyCancellable?
+    private var calendarSelCancellable: AnyCancellable?
     private var prayerTimes: PrayerTimes?
+    private var lastCalculationDay: Int = -1  // day-of-year when prayer times were last calculated
     private var lastLatitude: Double = -6.2088  // Jakarta default
     private var lastLongitude: Double = 106.8456
 
@@ -203,24 +291,32 @@ class PrayerTimeViewModel: ObservableObject {
         // Restore all persisted settings
         let methodRaw = ud.string(forKey: "calculationMethod") ?? "kemenag"
         self.selectedMethod   = DariSholatMethod(rawValue: methodRaw) ?? .kemenag
-        self.usesHanafi       = ud.bool(forKey: "usesHanafi")
         self.selectedLanguage = ud.string(forKey: "appLanguage") ?? "id"
 
-        let styleRaw = ud.string(forKey: "menuBarStyle") ?? "countdown"
-        self.menuBarStyle     = MenuBarStyle(rawValue: styleRaw) ?? .countdown
+        let styleRaw = ud.string(forKey: "menuBarStyle") ?? "compact"
+        self.menuBarStyle     = MenuBarStyle(rawValue: styleRaw) ?? .compact
         self.compactMainView  = ud.bool(forKey: "compactMainView")
         self.uses24HourTime   = ud.object(forKey: "uses24HourTime") as? Bool ?? true  // default 24h
         self.useAccentColor   = ud.object(forKey: "useAccentColor") as? Bool ?? true
         self.showSunnahPrayers = ud.bool(forKey: "showSunnahPrayers")
+        self.showCalendarEvents = ud.object(forKey: "showCalendarEvents") as? Bool ?? true
         
-        let blurRaw = ud.string(forKey: "blurStyle") ?? "liquidGlass"
-        self.blurStyle        = AppBlurStyle(rawValue: blurRaw) ?? .liquidGlass
+        let blurRaw = ud.string(forKey: "blurStyle") ?? "hud"
+        self.blurStyle        = AppBlurStyle(rawValue: blurRaw) ?? .hud
         self.customBlurOpacity = ud.object(forKey: "customBlurOpacity") as? Double ?? 0.85
+
+        let accentRaw = ud.string(forKey: "appAccentColor") ?? "green"
+        self.appAccentColor   = AppAccentColor(rawValue: accentRaw) ?? .green
+        self.customAccentR    = ud.object(forKey: "customAccentR") as? Double ?? 0.196
+        self.customAccentG    = ud.object(forKey: "customAccentG") as? Double ?? 0.784
+        self.customAccentB    = ud.object(forKey: "customAccentB") as? Double ?? 0.439
         
         self.runAtLogin       = ud.bool(forKey: "runAtLogin")
 
         setupLocationListener()
         startCountdownTimer()
+        updateRamadanCountdown()
+        setupCalendarListener()
     }
 
     // MARK: - Location Listener
@@ -254,11 +350,12 @@ class PrayerTimeViewModel: ObservableObject {
         let date = cal.dateComponents([.year, .month, .day], from: Date())
 
         var params = selectedMethod.params
-        params.madhab = usesHanafi ? .hanafi : .shafi
+        params.madhab = .shafi
 
         guard let prayers = PrayerTimes(coordinates: coordinates, date: date,
                                         calculationParameters: params) else { return }
         self.prayerTimes = prayers
+        self.lastCalculationDay = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? -1
         let lang = selectedLanguage
 
         DispatchQueue.main.async { [weak self] in
@@ -300,13 +397,14 @@ class PrayerTimeViewModel: ObservableObject {
             .autoconnect()
             .sink { [weak self] _ in
                 self?.updateCountdown()
+                self?.updateCalendarCountdown()
                 self?.checkMidnightReset()
             }
     }
 
     func updateCountdown() {
         guard let prayers = prayerTimes else {
-            menuBarText  = "darisholat"
+            menuBarText  = "DariSholat"
             countdownText = "--:--:--"
             return
         }
@@ -324,6 +422,7 @@ class PrayerTimeViewModel: ObservableObject {
             let nextTime = prayers.time(for: nextPrayer)
             let prayerName = localizedPrayerName(nextPrayer, lang: lang)
             nextPrayerDisplayName = prayerName
+            nextPrayerIconName = prayerIconName(nextPrayer)
 
             let diff = nextTime.timeIntervalSince(now)
             if diff > 0 {
@@ -338,13 +437,6 @@ class PrayerTimeViewModel: ObservableObject {
 
                 // Menu bar text based on style
                 switch menuBarStyle {
-                case .countdown:
-                    menuBarText = h > 0
-                        ? "\(prayerName) \(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
-                        : "\(prayerName) \(m):\(String(format: "%02d", s))"
-                case .prayerTime:
-                    let formatted = formattedTime(nextTime, use24h: uses24HourTime)
-                    menuBarText = "\(prayerName) \(formatted)"
                 case .iconOnly:
                     menuBarText = ""
                 case .compact:
@@ -361,36 +453,146 @@ class PrayerTimeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Tomorrow Fajr fallback
+    // MARK: - Next Fajr fallback (today or tomorrow)
 
     private func calculateTomorrowFajr(prayers: PrayerTimes, now: Date, lang: String) {
         let cal = Calendar(identifier: .gregorian)
+        let coords = Coordinates(latitude: lastLatitude, longitude: lastLongitude)
+        var params = selectedMethod.params
+        params.madhab = .shafi
+
+        // First, try TODAY's Fajr (handles midnight–Fajr window when prayerTimes is stale)
+        let todayComponents = cal.dateComponents([.year, .month, .day], from: now)
+        if let todayPrayers = PrayerTimes(coordinates: coords, date: todayComponents, calculationParameters: params) {
+            let diffToday = todayPrayers.fajr.timeIntervalSince(now)
+            if diffToday > 0 {
+                // Today's Fajr is still upcoming — use it and force-refresh stale prayerTimes
+                self.prayerTimes = todayPrayers
+                self.lastCalculationDay = Calendar.current.ordinality(of: .day, in: .era, for: now) ?? -1
+                applyFajrCountdown(diff: diffToday, lang: lang)
+                return
+            }
+        }
+
+        // Today's Fajr has passed — calculate tomorrow's
         guard let tomorrow = cal.date(byAdding: .day, value: 1, to: now) else { return }
         let tComponents = cal.dateComponents([.year, .month, .day], from: tomorrow)
-        let coords      = Coordinates(latitude: lastLatitude, longitude: lastLongitude)
-        var params      = selectedMethod.params
-        params.madhab   = usesHanafi ? .hanafi : .shafi
-
         if let tp = PrayerTimes(coordinates: coords, date: tComponents, calculationParameters: params) {
             let diff = tp.fajr.timeIntervalSince(now)
             guard diff > 0 else { return }
-            let h = Int(diff) / 3600
-            let m = (Int(diff) % 3600) / 60
-            let s = Int(diff) % 60
-            let fName = L10n.fajr(lang)
-            nextPrayerDisplayName = fName
-            countdownText = h > 0
-                ? "\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
-                : "\(m):\(String(format: "%02d", s))"
+            applyFajrCountdown(diff: diff, lang: lang)
+        }
+    }
+
+    private func applyFajrCountdown(diff: TimeInterval, lang: String) {
+        let h = Int(diff) / 3600
+        let m = (Int(diff) % 3600) / 60
+        let s = Int(diff) % 60
+        let fName = L10n.fajr(lang)
+        nextPrayerDisplayName = fName
+        nextPrayerIconName = prayerIconName(.fajr)
+        countdownText = h > 0
+            ? "\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
+            : "\(m):\(String(format: "%02d", s))"
+        switch menuBarStyle {
+        case .iconOnly:
+            menuBarText = ""
+        case .compact:
             menuBarText = h > 0
-                ? "\(fName) \(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
-                : "\(fName) \(m):\(String(format: "%02d", s))"
+                ? "\(fName) -\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
+                : "\(fName) -\(m):\(String(format: "%02d", s))"
         }
     }
 
     private func checkMidnightReset() {
-        let c = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
-        if c.hour == 0 && c.minute == 0 && c.second == 0 { refreshPrayerTimes() }
+        let today = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? -1
+        if today != lastCalculationDay {
+            refreshPrayerTimes()
+            updateRamadanCountdown()
+        }
+    }
+
+    // MARK: - Ramadan Countdown (Islamic/Hijri Calendar)
+
+    func updateRamadanCountdown() {
+        let hijri = Calendar(identifier: .islamicUmmAlQura)
+        let now = Date()
+        let lang = selectedLanguage
+
+        // Get current Hijri date
+        let currentComponents = hijri.dateComponents([.year, .month, .day], from: now)
+        guard let currentMonth = currentComponents.month,
+              let currentYear = currentComponents.year else { return }
+
+        // Ramadan is month 9 in the Islamic calendar
+        let ramadanMonth = 9
+
+        if currentMonth == ramadanMonth {
+            // We are IN Ramadan right now
+            isCurrentlyRamadan = true
+            daysToRamadan = 0
+
+            // Tooltip: show current Ramadan date range
+            let currentDay = currentComponents.day ?? 1
+            let hijriDateStr = "\(currentDay) Ramadan \(currentYear) H"
+            let gregFormatter = DateFormatter()
+            gregFormatter.dateFormat = "d MMMM yyyy"
+            gregFormatter.locale = Locale(identifier: lang == "id" ? "id_ID" : lang == "ar" ? "ar_SA" : "en_US")
+            let gregDateStr = gregFormatter.string(from: now)
+            ramadanDateTooltip = "\(hijriDateStr)\n\(gregDateStr)"
+
+            switch lang {
+            case "ar": ramadanCountdownText = "رمضان مبارك!"
+            case "id": ramadanCountdownText = "Ramadhan Mubarak!"
+            default:   ramadanCountdownText = "Ramadan Mubarak!"
+            }
+            return
+        }
+
+        isCurrentlyRamadan = false
+
+        // Calculate next Ramadan 1st
+        var nextRamadanComponents = DateComponents()
+        nextRamadanComponents.month = ramadanMonth
+        nextRamadanComponents.day = 1
+
+        if currentMonth < ramadanMonth {
+            // Ramadan is later this Hijri year
+            nextRamadanComponents.year = currentYear
+        } else {
+            // Ramadan already passed this Hijri year → next year
+            nextRamadanComponents.year = currentYear + 1
+        }
+
+        guard let nextRamadanDate = hijri.date(from: nextRamadanComponents) else { return }
+
+        // Calculate days between now and next Ramadan
+        let gregorian = Calendar(identifier: .gregorian)
+        let days = gregorian.dateComponents([.day], from: gregorian.startOfDay(for: now),
+                                            to: gregorian.startOfDay(for: nextRamadanDate)).day ?? 0
+        daysToRamadan = max(0, days)
+
+        // Format tooltip with Gregorian + Hijri date
+        let gregFormatter = DateFormatter()
+        gregFormatter.dateFormat = "EEEE, d MMMM yyyy"
+        gregFormatter.locale = Locale(identifier: lang == "id" ? "id_ID" : lang == "ar" ? "ar_SA" : "en_US")
+        let gregDateStr = gregFormatter.string(from: nextRamadanDate)
+
+        let targetYear = nextRamadanComponents.year ?? (currentYear + 1)
+        let hijriLabel: String
+        switch lang {
+        case "ar": hijriLabel = "1 رمضان \(targetYear) هـ"
+        case "id": hijriLabel = "1 Ramadhan \(targetYear) H"
+        default:   hijriLabel = "1 Ramadan \(targetYear) AH"
+        }
+        ramadanDateTooltip = "\(hijriLabel)\n\(gregDateStr)"
+
+        // Format countdown text
+        switch lang {
+        case "ar": ramadanCountdownText = "\(daysToRamadan) يوم"
+        case "id": ramadanCountdownText = "\(daysToRamadan) hari"
+        default:   ramadanCountdownText = "\(daysToRamadan) days"
+        }
     }
 
     // MARK: - Run at Login
@@ -422,6 +624,17 @@ class PrayerTimeViewModel: ObservableObject {
         }
     }
 
+    func prayerIconName(_ prayer: Prayer) -> String {
+        switch prayer {
+        case .fajr:    return "sunrise.fill"
+        case .sunrise: return "sun.and.horizon.fill"
+        case .dhuhr:   return "sun.max.fill"
+        case .asr:     return "sun.min.fill"
+        case .maghrib: return "sunset.fill"
+        case .isha:    return "moon.stars.fill"
+        }
+    }
+
     func formattedTime(_ date: Date, use24h: Bool) -> String {
         let formatter = DateFormatter()
         // Dot-separator style: "04.13" — clean, no AM/PM clutter
@@ -435,7 +648,12 @@ class PrayerTimeViewModel: ObservableObject {
     }
 
     func isNextPrayer(_ prayer: Prayer) -> Bool {
-        prayerTimes?.nextPrayer(at: Date()) == prayer
+        if let next = prayerTimes?.nextPrayer(at: Date()) {
+            return next == prayer
+        } else {
+            // All of today's prayers have passed, so the next prayer is tomorrow's Fajr.
+            return prayer == .fajr
+        }
     }
 
     func isCurrentPrayer(_ prayer: Prayer) -> Bool {
@@ -448,5 +666,58 @@ class PrayerTimeViewModel: ObservableObject {
 
     func requestLocationUpdate() {
         locationManager.requestLocation()
+    }
+
+    // MARK: - Calendar Integration
+
+    private func setupCalendarListener() {
+        calendarCancellable = calendarManager.$events
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] events in
+                guard let self = self else { return }
+                // Show max 3 upcoming events
+                self.upcomingEvents = Array(events.prefix(3))
+                self.updateCalendarCountdown()
+            }
+
+        calendarAuthCancellable = calendarManager.$authorizationStatus
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.isCalendarAuthorized = self.calendarManager.isAuthorized
+            }
+
+        calendarCalendarsCancellable = calendarManager.$availableCalendars
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] calendars in
+                self?.availableCalendars = calendars
+            }
+
+        calendarSelCancellable = calendarManager.$selectedCalendarIdentifiers
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] selected in
+                self?.selectedCalendarIdentifiers = selected
+            }
+
+        // Request access if already enabled
+        if showCalendarEvents {
+            calendarManager.requestAccess()
+        }
+    }
+
+    func toggleCalendar(identifier: String) {
+        calendarManager.toggleCalendar(identifier: identifier)
+    }
+
+    func updateCalendarCountdown() {
+        guard showCalendarEvents, let first = upcomingEvents.first else {
+            nextEventCountdown = ""
+            return
+        }
+        nextEventCountdown = first.countdownText(now: Date(), lang: selectedLanguage)
+    }
+
+    func refreshCalendarEvents() {
+        calendarManager.fetchEvents()
     }
 }

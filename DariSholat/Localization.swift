@@ -228,4 +228,106 @@ struct L10n {
         default:   return "Today's Schedule"
         }
     }
+
+    // MARK: - Calendar Events
+
+    static func events(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "الأحداث"
+        case "id": return "Acara"
+        default:   return "Events"
+        }
+    }
+
+    static func noEvents(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "لا أحداث قادمة"
+        case "id": return "Tidak ada acara mendatang"
+        default:   return "No upcoming events"
+        }
+    }
+
+    static func grantCalendarAccess(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "السماح بالوصول للتقويم"
+        case "id": return "Izinkan Akses Kalender"
+        default:   return "Grant Calendar Access"
+        }
+    }
+
+    static func tomorrow(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "غداً"
+        case "id": return "Besok"
+        default:   return "Tomorrow"
+        }
+    }
+
+    static func showCalendarEvents(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "عرض أحداث التقويم"
+        case "id": return "Tampilkan Acara Kalender"
+        default:   return "Show Calendar Events"
+        }
+    }
+
+    static func selectedCalendars(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "تصفية التقويم"
+        case "id": return "Filter Kalender"
+        default:   return "Calendar Filters"
+        }
+    }
+
+    // MARK: - Notification Permission Denied Alert
+
+    static func notificationPermissionDeniedTitle(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "تم رفض إذن الإشعارات"
+        case "id": return "Izin Notifikasi Ditolak"
+        default:   return "Notification Permission Denied"
+        }
+    }
+
+    static func notificationPermissionDeniedMessage(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "يرجى تمكين الإشعارات لـ DariSholat في إعدادات النظام لتلقي تنبيهات الصلاة."
+        case "id": return "Silakan aktifkan notifikasi untuk DariSholat di Pengaturan Sistem untuk menerima peringatan sholat."
+        default:   return "Please enable notifications for DariSholat in System Settings to receive prayer alerts."
+        }
+    }
+
+    static func openSettings(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "فتح الإعدادات"
+        case "id": return "Buka Pengaturan"
+        default:   return "Open Settings"
+        }
+    }
+
+    static func cancel(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "إلغاء"
+        case "id": return "Batal"
+        default:   return "Cancel"
+        }
+    }
+
+    // MARK: - Ramadan Countdown
+
+    static func ramadan(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "رمضان"
+        case "id": return "Ramadhan"
+        default:   return "Ramadan"
+        }
+    }
+
+    static func ramadanCountdownLabel(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "حتى رمضان"
+        case "id": return "Menuju Ramadhan"
+        default:   return "Until Ramadan"
+        }
+    }
 }

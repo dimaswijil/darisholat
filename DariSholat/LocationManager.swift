@@ -8,6 +8,7 @@
 import Foundation
 import CoreLocation
 import Combine
+import AppKit
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
@@ -29,16 +30,29 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     // MARK: - Authorization
 
     func requestAuthorization() {
-        // macOS uses requestWhenInUseAuthorization (macOS 11+)
-        // or requestAlwaysAuthorization
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.requestWhenInUseAuthorization()
+        let status = locationManager.authorizationStatus
+        switch status {
+        case .authorizedAlways, .authorized:
+            // Already authorized — start immediately
             locationManager.startUpdatingLocation()
+        case .notDetermined:
+            // Request permission — will start in delegate callback
+            locationManager.requestWhenInUseAuthorization()
+        case .denied, .restricted:
+            // Permission denied — use fallback
+            useFallbackLocation()
+        @unknown default:
+            locationManager.requestWhenInUseAuthorization()
         }
     }
 
     func requestLocation() {
-        locationManager.requestLocation()
+        if locationManager.authorizationStatus == .authorized ||
+           locationManager.authorizationStatus == .authorizedAlways {
+            locationManager.requestLocation()
+        } else {
+            requestAuthorization()
+        }
     }
 
     // MARK: - CLLocationManagerDelegate
@@ -52,12 +66,17 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        let clError = error as? CLError
         print("Location error: \(error.localizedDescription)")
-        // Fallback to Jakarta if location fails
-        let fallback = CLLocation(latitude: -6.2088, longitude: 106.8456)
-        DispatchQueue.main.async {
-            self.currentLocation = fallback
-            self.cityName = "Jakarta (default)"
+
+        if clError?.code == .denied {
+            // User denied permission — use fallback, don't keep retrying
+            useFallbackLocation()
+        } else if clError?.code == .locationUnknown {
+            // Temporary failure — will retry automatically
+            print("Location temporarily unavailable, will retry...")
+        } else {
+            useFallbackLocation()
         }
     }
 
@@ -70,16 +89,34 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         case .authorizedAlways, .authorized:
             locationManager.startUpdatingLocation()
         case .denied, .restricted:
-            // Fallback to Jakarta
-            let fallback = CLLocation(latitude: -6.2088, longitude: 106.8456)
-            DispatchQueue.main.async {
+            useFallbackLocation()
+            // Optionally open System Settings for the user
+            openLocationSettings()
+        case .notDetermined:
+            // Wait — don't call requestWhenInUseAuthorization again here
+            // to avoid a loop; it was already called in requestAuthorization()
+            break
+        @unknown default:
+            break
+        }
+    }
+
+    // MARK: - Fallback
+
+    private func useFallbackLocation() {
+        let fallback = CLLocation(latitude: -6.2088, longitude: 106.8456)
+        DispatchQueue.main.async {
+            if self.currentLocation == nil {
                 self.currentLocation = fallback
                 self.cityName = "Jakarta (default)"
             }
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        @unknown default:
-            break
+        }
+    }
+
+    /// Opens System Settings → Privacy → Location Services on macOS
+    private func openLocationSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices") {
+            NSWorkspace.shared.open(url)
         }
     }
 

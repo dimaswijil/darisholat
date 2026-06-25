@@ -38,6 +38,13 @@
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>DariSholat needs your location to calculate accurate prayer times for your area.</string>
 
+    <!-- Calendar permission -->
+    <key>NSCalendarsUsageDescription</key>
+    <string>DariSholat needs calendar access to show countdown to your upcoming events.</string>
+
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>DariSholat needs full calendar access to show countdown to your upcoming events.</string>
+
     <!-- Minimum macOS version -->
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>

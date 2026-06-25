@@ -16,11 +16,7 @@
 import SwiftUI
 import Adhan
 
-// MARK: - Navigation State
-
-enum AppScreen {
-    case main, settings, about
-}
+// Navigation state moved to ViewModel
 
 // MARK: - Fibonacci / Golden Ratio Design Tokens
 
@@ -51,7 +47,6 @@ private enum DS {
 
 struct ContentView: View {
     @ObservedObject var viewModel: PrayerTimeViewModel
-    @State private var currentScreen: AppScreen = .main
 
     var body: some View {
         ZStack {
@@ -59,58 +54,102 @@ struct ContentView: View {
                 .opacity(viewModel.blurStyle == .custom ? viewModel.customBlurOpacity : 1.0)
                 .ignoresSafeArea()
 
-            Group {
-                switch currentScreen {
-                case .main:
-                    mainView.transition(.opacity)
-                case .settings:
-                    SettingsView(viewModel: viewModel) {
-                        withAnimation(.easeInOut(duration: 0.15)) { currentScreen = .main }
+            // Subtle dark overlay to match the Control Center's dark frosted glass depth
+            if viewModel.blurStyle == .hud || viewModel.blurStyle == .liquidGlass {
+                Color.black.opacity(0.15)
+                    .ignoresSafeArea()
+            }
+
+            HStack(alignment: .top, spacing: 0) {
+                // Left Column (Prayer times, Settings, or About)
+                Group {
+                    switch viewModel.currentScreen {
+                    case .main:
+                        leftMainColumn
+                            .transition(.opacity)
+                    case .settings:
+                        SettingsView(viewModel: viewModel) {
+                            withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
+                        }
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                            removal:   .move(edge: .trailing).combined(with: .opacity)
+                        ))
+                    case .about:
+                        AboutView(language: viewModel.selectedLanguage) {
+                            withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
+                        }
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                            removal:   .move(edge: .trailing).combined(with: .opacity)
+                        ))
                     }
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal:   .move(edge: .trailing).combined(with: .opacity)
-                    ))
-                case .about:
-                    AboutView(language: viewModel.selectedLanguage) {
-                        withAnimation(.easeInOut(duration: 0.15)) { currentScreen = .main }
+                }
+                .frame(width: (viewModel.currentScreen == .settings || viewModel.currentScreen == .about)
+                       ? (DS.panelWidth + 240) : DS.panelWidth)
+                .animation(.easeInOut(duration: 0.15), value: viewModel.currentScreen)
+
+                if viewModel.currentScreen == .main && viewModel.showCalendarEvents {
+                    // Vertical separator
+                    Divider()
+
+                    // Right Column (Calendar events)
+                    VStack(spacing: 0) {
+                        calendarEventsSection
+                        Spacer(minLength: 0)
                     }
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal:   .move(edge: .trailing).combined(with: .opacity)
-                    ))
+                    .frame(width: 240)
                 }
             }
-            .animation(.easeInOut(duration: 0.15), value: currentScreen)
+            .padding(.vertical, DS.f5)
         }
-        .frame(width: DS.panelWidth)
+        .frame(width: {
+            switch viewModel.currentScreen {
+            case .settings:
+                return DS.panelWidth + 240
+            case .about:
+                return DS.panelWidth + 240
+            case .main:
+                return viewModel.showCalendarEvents ? (DS.panelWidth + 240) : DS.panelWidth
+            }
+        }())
         .environment(\.layoutDirection,
                       viewModel.selectedLanguage == "ar" ? .rightToLeft : .leftToRight)
+        .tint(viewModel.resolvedAccentColor)
+        .accentColor(viewModel.resolvedAccentColor)
     }
 
-    // MARK: - Main View
+    // MARK: - Left Main Column
 
-    private var mainView: some View {
+    private var leftMainColumn: some View {
         VStack(spacing: 0) {
             headerRow
-            hairline
-            locationRow
             hairline
             prayerList
             hairline
             bottomMenu
         }
-        .padding(.vertical, DS.f5)
     }
 
-    // MARK: - Header  (app name left · countdown right)
+    // MARK: - Header (macOS Focus-like title + location subtitle + countdown)
 
     private var headerRow: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("darisholat")
-                .font(.system(size: DS.fontTitle, weight: .bold, design: .rounded))
-                .foregroundColor(.primary)
-                .tracking(-0.4)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("DariSholat")
+                    .font(.system(size: DS.fontTitle, weight: .bold, design: .rounded))
+                    .foregroundColor(.primary)
+                    .tracking(-0.4)
+
+                HStack(spacing: 3) {
+                    Image(systemName: "location.fill")
+                        .font(.system(size: 9))
+                        .foregroundColor(.secondary)
+                    Text(viewModel.cityName)
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                }
+            }
 
             Spacer(minLength: DS.f8)
 
@@ -118,32 +157,16 @@ struct ContentView: View {
                 HStack(spacing: DS.f3) {
                     Text(viewModel.nextPrayerDisplayName)
                         .font(.system(size: DS.fontSmall, weight: .regular))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.accentColor)
                     Text(viewModel.countdownText)
                         .font(.system(size: DS.fontSmall, weight: .medium, design: .monospaced))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.accentColor)
                         .monospacedDigit()
                 }
             }
         }
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.headerV)
-    }
-
-    // MARK: - Location
-
-    private var locationRow: some View {
-        HStack(spacing: DS.f5) {
-            Image(systemName: "location.fill")
-                .font(.system(size: DS.fontSmall - 1, weight: .medium))
-                .foregroundColor(.accentColor)
-            Text(viewModel.cityName)
-                .font(.system(size: DS.fontBody, weight: .regular))
-                .foregroundColor(.primary)
-            Spacer()
-        }
-        .padding(.horizontal, DS.paddingH)
-        .padding(.vertical, DS.rowV)
     }
 
     // MARK: - Prayer List
@@ -155,7 +178,7 @@ struct ContentView: View {
                     name: item.name,
                     time: viewModel.formattedTime(item.time, use24h: viewModel.uses24HourTime),
                     isNext: viewModel.isNextPrayer(item.prayer),
-                    useAccentColor: viewModel.useAccentColor
+                    prayer: item.prayer
                 )
             }
         }
@@ -166,38 +189,143 @@ struct ContentView: View {
 
     private var bottomMenu: some View {
         VStack(spacing: 0) {
-            menuBtn(L10n.settings(viewModel.selectedLanguage), chevron: true, color: .primary) {
-                withAnimation(.easeInOut(duration: 0.15)) { currentScreen = .settings }
+            menuBtn(L10n.settings(viewModel.selectedLanguage), color: .primary) {
+                withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .settings }
             }
-            menuBtn(L10n.about(viewModel.selectedLanguage), chevron: false, color: .primary) {
-                withAnimation(.easeInOut(duration: 0.15)) { currentScreen = .about }
+            menuBtn(L10n.about(viewModel.selectedLanguage), color: .primary) {
+                withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .about }
             }
             hairline
-            menuBtn(L10n.quit(viewModel.selectedLanguage), chevron: false, color: .red) {
+            menuBtn(L10n.quit(viewModel.selectedLanguage), color: .red) {
                 NSApplication.shared.terminate(nil)
             }
         }
     }
 
     @ViewBuilder
-    private func menuBtn(_ label: String, chevron: Bool, color: Color, action: @escaping () -> Void) -> some View {
+    private func menuBtn(_ label: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Text(label)
                     .font(.system(size: DS.fontBody, weight: .regular))
                     .foregroundColor(color)
                 Spacer()
-                if chevron {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: DS.fontSmall - 1, weight: .semibold))
-                        .foregroundColor(.secondary)
-                }
             }
             .padding(.horizontal, DS.paddingH)
             .padding(.vertical, DS.rowV)
             .contentShape(Rectangle())
         }
         .buttonStyle(HoverMenuButtonStyle())
+    }
+
+    // MARK: - Calendar Events Section
+
+    private var calendarEventsSection: some View {
+        VStack(spacing: 0) {
+            // Section header
+            HStack {
+                HStack(spacing: DS.f3) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: DS.fontSmall - 1, weight: .medium))
+                        .foregroundColor(.accentColor)
+                    Text(L10n.events(viewModel.selectedLanguage))
+                        .font(.system(size: DS.fontSmall, weight: .semibold))
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, DS.paddingH)
+            .padding(.top, DS.rowV)
+            .padding(.bottom, DS.f3)
+
+            // 1️⃣ Ramadan Countdown (always visible, pinned at top)
+            ramadanCountdownRow
+
+            Divider().opacity(DS.dividerOpacity)
+                .padding(.horizontal, DS.paddingH)
+
+            // 2️⃣ Apple Calendar Events
+            if !viewModel.isCalendarAuthorized {
+                // Permission not granted
+                Button(action: { viewModel.calendarManager.requestAccess() }) {
+                    HStack {
+                        Image(systemName: "lock.shield")
+                            .font(.system(size: DS.fontSmall))
+                            .foregroundColor(.secondary)
+                        Text(L10n.grantCalendarAccess(viewModel.selectedLanguage))
+                            .font(.system(size: DS.fontBody, weight: .regular))
+                            .foregroundColor(.accentColor)
+                    }
+                    .padding(.horizontal, DS.paddingH)
+                    .padding(.vertical, DS.rowV)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(HoverMenuButtonStyle())
+            } else if viewModel.upcomingEvents.isEmpty {
+                // No events
+                HStack {
+                    Text(L10n.noEvents(viewModel.selectedLanguage))
+                        .font(.system(size: DS.fontBody, weight: .regular))
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, DS.paddingH)
+                .padding(.vertical, DS.rowV)
+            } else {
+                // Event list
+                ForEach(viewModel.upcomingEvents) { event in
+                    CalendarEventRow(
+                        event: event,
+                        lang: viewModel.selectedLanguage
+                    )
+                }
+            }
+        }
+        .padding(.bottom, DS.f3)
+    }
+
+    // MARK: - Ramadan Countdown Row
+
+    private var ramadanCountdownRow: some View {
+        HStack(spacing: 12) {
+            // Crescent moon icon
+            ZStack {
+                Circle()
+                    .fill(viewModel.isCurrentlyRamadan
+                          ? Color.accentColor
+                          : Color.accentColor.opacity(0.12))
+                    .frame(width: 28, height: 28)
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(viewModel.isCurrentlyRamadan ? .white : .accentColor)
+            }
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(L10n.ramadan(viewModel.selectedLanguage))
+                    .font(.system(size: DS.fontBody, weight: viewModel.isCurrentlyRamadan ? .semibold : .regular))
+                    .foregroundColor(.primary)
+                    .lineLimit(1)
+
+                if viewModel.isCurrentlyRamadan {
+                    Text(viewModel.ramadanCountdownText)
+                        .font(.system(size: DS.fontSmall - 1, weight: .medium))
+                        .foregroundColor(.accentColor)
+                }
+            }
+
+            Spacer(minLength: 8)
+
+            if !viewModel.isCurrentlyRamadan {
+                Text(viewModel.ramadanCountdownText)
+                    .font(.system(size: DS.fontBody, weight: .regular, design: .monospaced))
+                    .foregroundColor(.secondary)
+                    .monospacedDigit()
+            }
+        }
+        .padding(.horizontal, DS.paddingH)
+        .padding(.vertical, DS.rowV)
+        .help(viewModel.ramadanDateTooltip)
     }
 
     private var hairline: some View {
@@ -211,31 +339,90 @@ struct PrayerTimeRow: View {
     let name: String
     let time: String
     let isNext: Bool
-    let useAccentColor: Bool
+    let prayer: Prayer
     @State private var isHovered = false
 
-    private var accent: Color { useAccentColor ? .accentColor : Color(nsColor: .controlAccentColor) }
+    private var accent: Color { .accentColor }
 
     var body: some View {
-        HStack {
-            Text(name)
-                .font(.system(size: DS.fontBody, weight: isNext ? .semibold : .regular))
-                .foregroundColor(isNext ? accent : .primary)
+        HStack(alignment: .center, spacing: 12) {
+            // Circular Icon
+            ZStack {
+                Circle()
+                    .fill(isNext ? accent : Color.primary.opacity(0.08))
+                    .frame(width: 28, height: 28)
+                Image(systemName: prayerIconName(prayer))
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(isNext ? .white : .primary.opacity(0.8))
+            }
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(name)
+                    .font(.system(size: DS.fontBody, weight: isNext ? .semibold : .regular))
+                    .foregroundColor(isNext ? .primary : .primary.opacity(0.9))
+            }
+
             Spacer()
+
             Text(time)
                 .font(.system(size: DS.fontBody, weight: isNext ? .semibold : .regular, design: .monospaced))
-                .foregroundColor(isNext ? accent : Color.secondary.opacity(0.8))
+                .foregroundColor(isNext ? accent : .secondary)
+        }
+        .padding(.horizontal, DS.paddingH)
+        .padding(.vertical, isNext ? DS.rowV + 2 : DS.rowV)
+        .background(isHovered ? Color.primary.opacity(0.04) : Color.clear)
+        .onHover { h in withAnimation(.easeInOut(duration: 0.1)) { isHovered = h } }
+    }
+
+    private func prayerIconName(_ prayer: Prayer) -> String {
+        switch prayer {
+        case .fajr:    return "sunrise.fill"
+        case .sunrise: return "sun.and.horizon.fill"
+        case .dhuhr:   return "sun.max.fill"
+        case .asr:     return "sun.min.fill"
+        case .maghrib: return "sunset.fill"
+        case .isha:    return "moon.stars.fill"
+        }
+    }
+}
+
+// MARK: - Calendar Event Row
+
+struct CalendarEventRow: View {
+    let event: CalendarEventItem
+    let lang: String
+    @State private var isHovered = false
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // Circular Calendar Icon with light background of accent color (green)
+            ZStack {
+                Circle()
+                    .fill(Color.accentColor.opacity(0.12))
+                    .frame(width: 28, height: 28)
+                Image(systemName: "calendar")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.accentColor)
+            }
+
+            Text(event.title)
+                .font(.system(size: DS.fontBody, weight: .regular))
+                .foregroundColor(.primary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+
+            Spacer(minLength: 8)
+
+            Text(event.countdownText(lang: lang))
+                .font(.system(size: DS.fontBody, weight: .regular, design: .monospaced))
+                .foregroundColor(.secondary)
+                .monospacedDigit()
         }
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.rowV)
-        .background(
-            Group {
-                if isNext       { Color.accentColor.opacity(0.10) }
-                else if isHovered { Color.primary.opacity(0.04) }
-                else            { Color.clear }
-            }
-        )
+        .background(isHovered ? Color.primary.opacity(0.04) : Color.clear)
         .onHover { h in withAnimation(.easeInOut(duration: 0.1)) { isHovered = h } }
+        .help(event.tooltipText(lang: lang))
     }
 }
 

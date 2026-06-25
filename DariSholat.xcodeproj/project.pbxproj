@@ -20,6 +20,7 @@
 		DA0002000000000000000009 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000009 /* Localization.swift */; };
 		DA000200000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
 		DA000200000000000000000D /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = DA0009000000000000000002 /* Adhan */; };
+		DA000200000000000000000E /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000E /* CalendarManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		DA000100000000000000000B /* DariSholat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DariSholat.entitlements; sourceTree = "<group>"; };
 		DA000100000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA000100000000000000000D /* DariSholat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DariSholat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA000100000000000000000E /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				DA0001000000000000000007 /* SettingsView.swift */,
 				DA0001000000000000000008 /* AboutView.swift */,
 				DA0001000000000000000009 /* Localization.swift */,
+				DA000100000000000000000E /* CalendarManager.swift */,
 				DA000100000000000000000A /* Info.plist */,
 				DA000100000000000000000B /* DariSholat.entitlements */,
 				DA000100000000000000000C /* Assets.xcassets */,
@@ -249,6 +252,7 @@
 				DA0002000000000000000007 /* SettingsView.swift in Sources */,
 				DA0002000000000000000008 /* AboutView.swift in Sources */,
 				DA0002000000000000000009 /* Localization.swift in Sources */,
+				DA000200000000000000000E /* CalendarManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
