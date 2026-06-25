@@ -1,4 +1,4 @@
-# DariSholat 🕋
+<img width="1336" height="1472" alt="IMG_1259 copy" src="https://github.com/user-attachments/assets/b0da179c-bfcf-40b8-8a2b-bf03fea83254" /># DariSholat 🕋
 
 > Aplikasi menu bar macOS yang ringan dan elegan untuk memantau waktu sholat harian langsung dari desktop kamu.
 
@@ -153,7 +153,7 @@ Untuk perubahan besar atau fitur baru, disarankan membuka **Issue** terlebih dah
 ---
 
 <p align="center">
-  Dibuat dengan ♥ untuk komunitas Muslim Indonesia 🇮🇩
+  Dibuat dengan ♥ untuk Muslim Global 🌎
   <br>
   🍉 Free Palestine, From Fiver To The Sea
 </p>
