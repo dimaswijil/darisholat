@@ -1,4 +1,4 @@
-<img width="1336" height="1472" alt="IMG_1259 copy" src="https://github.com/user-attachments/assets/b0da179c-bfcf-40b8-8a2b-bf03fea83254" /># DariSholat 🕋
+# DariSholat 🕋
 
 > Aplikasi menu bar macOS yang ringan dan elegan untuk memantau waktu sholat harian langsung dari desktop kamu.
 
