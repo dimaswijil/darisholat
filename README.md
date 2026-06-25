@@ -39,9 +39,7 @@
 | 🎨 **Personalisasi Tema & UI** | Sesuaikan warna aksen (Accent Color) aplikasi sesuai selera, dengan dukungan penuh mode gelap/terang native macOS |
 | 🕒 **Jadwal Lengkap** | Menampilkan semua waktu sholat: Subuh, Syuruq, Dzuhur, Ashar, Maghrib, dan Isya |
 | ⚙️ **Metode Kemenag RI & Global** | Menggunakan metode perhitungan dari Kementerian Agama Republik Indonesia maupun standar global lainnya |
-| 🌙 **Mode Hanafi / Syafi'i** | Toggle madhhab yang memengaruhi waktu Ashar (Hanafi lebih akhir dibanding Syafi'i) |
 | 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba agar tidak terlewat saat sedang bekerja |
-| 🌅 **Tampilkan Sholat Sunnah** | Opsi untuk menampilkan waktu sholat-sholat sunnah rawatib |
 
 ---
 
@@ -57,11 +55,12 @@
 
 ## ⚙️ Pengaturan yang Tersedia
 
-- **Tampilan:** Compact / expanded menu bar, format waktu 24 jam, accent color, background blur (Liquid Glass)
-- **Perhitungan:** Pilihan metode (Kemenag RI, dll.), toggle Hanafi Madhhab untuk waktu Ashar
-- **Lokasi:** Otomatis via GPS atau atur manual
-- **Sistem:** Jalankan saat login, notifikasi sholat
-- **Bahasa:** Tersedia pilihan bahasa antarmuka
+- **Display:** Menu Bar Style (Icon Only / Compact), tampilan UI yang ringkas (Compact Main View), dan format waktu 24 jam.
+- **System:** Opsi jalankan saat login (Run at Login) dan Notifikasi waktu sholat.
+- **Theme:** Penyesuaian warna aksen aplikasi (Accent Color) dengan palet atau warna kustom.
+- **Calculation:** Berbagai pilihan metode perhitungan waktu sholat (Kemenag RI, MWL, ISNA, dll).
+- **Location:** Lokasi otomatis (berbasis koordinat) atau perubahan lokasi manual.
+- **Language:** Pilihan multibahasa untuk antarmuka aplikasi.
 
 ---
 
