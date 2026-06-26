@@ -168,6 +168,7 @@ class PrayerTimeViewModel: ObservableObject {
     @Published var nextPrayerIconName: String = "moon.stars.fill"
     @Published var currentPrayerDisplayName: String = ""
     @Published var prayerSchedule: [PrayerScheduleItem] = []
+    @Published var currentHijriDate: String = ""
     @Published var cityName: String = "Mendeteksi..."
     @Published var isLocationAvailable: Bool = false
 
@@ -521,6 +522,12 @@ class PrayerTimeViewModel: ObservableObject {
 
         // Get current Hijri date
         let currentComponents = hijri.dateComponents([.year, .month, .day], from: now)
+        let hijriFormatter = DateFormatter()
+        hijriFormatter.calendar = hijri
+        hijriFormatter.dateFormat = "d MMMM yyyy"
+        hijriFormatter.locale = Locale(identifier: lang == "id" ? "id_ID" : lang == "ar" ? "ar_SA" : "en_US")
+        currentHijriDate = hijriFormatter.string(from: now)
+        
         guard let currentMonth = currentComponents.month,
               let currentYear = currentComponents.year else { return }
 
