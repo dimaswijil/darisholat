@@ -234,7 +234,7 @@ struct ContentView: View {
                 }
                 Spacer()
                 Text(viewModel.currentHijriDate + (viewModel.selectedLanguage == "id" ? " H" : " AH"))
-                    .font(.system(size: DS.fontBody, weight: .regular, design: .monospaced))
+                    .font(.system(size: DS.fontSmall, weight: .medium, design: .monospaced))
                     .foregroundColor(.accentColor)
             }
             .padding(.horizontal, DS.paddingH)
