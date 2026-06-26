@@ -136,6 +136,14 @@ struct AboutView: View {
                 .clipped()
             }
         )
+        .clipShape(
+            UnevenRoundedRectangle(
+                topLeadingRadius: 13,
+                bottomLeadingRadius: 13,
+                bottomTrailingRadius: 0,
+                topTrailingRadius: 0
+            )
+        )
     }
 
     // MARK: - Right Column (Developer & Links)
