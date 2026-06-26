@@ -26,7 +26,6 @@ struct AboutView: View {
                 .frame(width: 240)
         }
         .frame(minHeight: 460)
-        .clipShape(RoundedRectangle(cornerRadius: 13))
     }
 
     // MARK: - Left Column (App Info)
@@ -132,17 +131,9 @@ struct AboutView: View {
                         .scaledToFill()
                     Color.black.opacity(0.6)
                 }
-                .frame(width: proxy.size.width, height: proxy.size.height)
-                .clipped()
+                .frame(width: proxy.size.width, height: proxy.size.height + 10)
+                .offset(y: -5)
             }
-        )
-        .clipShape(
-            UnevenRoundedRectangle(
-                topLeadingRadius: 13,
-                bottomLeadingRadius: 13,
-                bottomTrailingRadius: 0,
-                topTrailingRadius: 0
-            )
         )
     }
 
