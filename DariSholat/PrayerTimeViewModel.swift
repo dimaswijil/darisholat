@@ -362,11 +362,11 @@ class PrayerTimeViewModel: ObservableObject {
             guard let self = self else { return }
 
             var schedule: [PrayerScheduleItem] = [
-                PrayerScheduleItem(prayer: .fajr,    name: L10n.fajr(lang),    time: prayers.fajr),
-                PrayerScheduleItem(prayer: .dhuhr,   name: L10n.dhuhr(lang),   time: prayers.dhuhr),
-                PrayerScheduleItem(prayer: .asr,     name: L10n.asr(lang),     time: prayers.asr),
-                PrayerScheduleItem(prayer: .maghrib, name: L10n.maghrib(lang), time: prayers.maghrib),
-                PrayerScheduleItem(prayer: .isha,    name: L10n.isha(lang),    time: prayers.isha),
+                PrayerScheduleItem(prayer: .fajr,    name: self.localizedPrayerName(.fajr, lang: lang),    time: prayers.fajr),
+                PrayerScheduleItem(prayer: .dhuhr,   name: self.localizedPrayerName(.dhuhr, lang: lang),   time: prayers.dhuhr),
+                PrayerScheduleItem(prayer: .asr,     name: self.localizedPrayerName(.asr, lang: lang),     time: prayers.asr),
+                PrayerScheduleItem(prayer: .maghrib, name: self.localizedPrayerName(.maghrib, lang: lang), time: prayers.maghrib),
+                PrayerScheduleItem(prayer: .isha,    name: self.localizedPrayerName(.isha, lang: lang),    time: prayers.isha),
             ]
 
             // Optionally include sunnah prayers
@@ -617,7 +617,9 @@ class PrayerTimeViewModel: ObservableObject {
         switch prayer {
         case .fajr:    return L10n.fajr(l)
         case .sunrise: return L10n.sunrise(l)
-        case .dhuhr:   return L10n.dhuhr(l)
+        case .dhuhr:
+            let isFriday = Calendar.current.component(.weekday, from: Date()) == 6
+            return isFriday ? L10n.jumuah(l) : L10n.dhuhr(l)
         case .asr:     return L10n.asr(l)
         case .maghrib: return L10n.maghrib(l)
         case .isha:    return L10n.isha(l)

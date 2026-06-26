@@ -39,6 +39,21 @@ struct L10n {
         }
     }
 
+    
+    static func jumuah(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "الجمعة"
+        case "id": return "Jumat"
+        case "tr": return "Cuma"
+        case "ja": return "ジュムア"
+        case "kk": return "Жұма"
+        case "fa": return "جمعه"
+        case "ur": return "جمعہ"
+        case "ms": return "Jumaat"
+        default:   return "Jumu'ah"
+        }
+    }
+
     static func dhuhr(_ lang: String) -> String {
         switch lang {
         case "ar": return "الظهر"
