@@ -54,34 +54,37 @@ enum MenuBarStyle: String, CaseIterable, Identifiable {
 // MARK: - Accent Color Preset
 
 enum AppAccentColor: String, CaseIterable, Identifiable {
+    case white  = "white"
     case green  = "green"
     case blue   = "blue"
     case purple = "purple"
     case orange = "orange"
     case red    = "red"
-    case custom = "custom"
+    case yellow = "yellow"
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
+        case .white:  return "White (Default)"
         case .green:  return "Green"
         case .blue:   return "Blue"
         case .purple: return "Purple"
         case .orange: return "Orange"
         case .red:    return "Red"
-        case .custom: return "Custom..."
+        case .yellow: return "Yellow"
         }
     }
 
     var color: Color {
         switch self {
+        case .white:  return Color.white
         case .green:  return Color(red: 0.196, green: 0.784, blue: 0.439) // original accent
         case .blue:   return Color(red: 0.20, green: 0.50, blue: 0.95)
         case .purple: return Color(red: 0.58, green: 0.34, blue: 0.92)
         case .orange: return Color(red: 0.95, green: 0.55, blue: 0.20)
         case .red:    return Color(red: 0.92, green: 0.28, blue: 0.28)
-        case .custom: return .green // placeholder, actual custom color handled separately
+        case .yellow: return Color.yellow
         }
     }
 
@@ -207,25 +210,18 @@ class PrayerTimeViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(customBlurOpacity, forKey: "customBlurOpacity") }
     }
 
+    // MARK: - Settings: Event Wallpaper
+    @Published var selectedEventWallpaper: String {
+        didSet { UserDefaults.standard.set(selectedEventWallpaper, forKey: "selectedEventWallpaper") }
+    }
+
     // MARK: - Settings: Accent Color
     @Published var appAccentColor: AppAccentColor {
         didSet { UserDefaults.standard.set(appAccentColor.rawValue, forKey: "appAccentColor") }
     }
-    @Published var customAccentR: Double {
-        didSet { UserDefaults.standard.set(customAccentR, forKey: "customAccentR") }
-    }
-    @Published var customAccentG: Double {
-        didSet { UserDefaults.standard.set(customAccentG, forKey: "customAccentG") }
-    }
-    @Published var customAccentB: Double {
-        didSet { UserDefaults.standard.set(customAccentB, forKey: "customAccentB") }
-    }
 
-    /// The resolved accent color based on preset or custom RGB
+    /// The resolved accent color based on preset
     var resolvedAccentColor: Color {
-        if appAccentColor == .custom {
-            return Color(red: customAccentR, green: customAccentG, blue: customAccentB)
-        }
         return appAccentColor.color
     }
 
@@ -306,12 +302,11 @@ class PrayerTimeViewModel: ObservableObject {
         self.blurStyle        = AppBlurStyle(rawValue: blurRaw) ?? .hud
         self.customBlurOpacity = ud.object(forKey: "customBlurOpacity") as? Double ?? 0.85
 
-        let accentRaw = ud.string(forKey: "appAccentColor") ?? "green"
-        self.appAccentColor   = AppAccentColor(rawValue: accentRaw) ?? .green
-        self.customAccentR    = ud.object(forKey: "customAccentR") as? Double ?? 0.196
-        self.customAccentG    = ud.object(forKey: "customAccentG") as? Double ?? 0.784
-        self.customAccentB    = ud.object(forKey: "customAccentB") as? Double ?? 0.439
+        let accentRaw = ud.string(forKey: "appAccentColor") ?? "white"
+        self.appAccentColor   = AppAccentColor(rawValue: accentRaw) ?? .white
         
+        self.selectedEventWallpaper = ud.string(forKey: "selectedEventWallpaper") ?? "AboutWallpaper"
+
         self.runAtLogin       = ud.bool(forKey: "runAtLogin")
 
         setupLocationListener()

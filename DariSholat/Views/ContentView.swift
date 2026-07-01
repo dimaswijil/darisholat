@@ -97,8 +97,22 @@ struct ContentView: View {
                     VStack(spacing: 0) {
                         calendarEventsSection
                         Spacer(minLength: 0)
+                        wallpaperSelector
                     }
                     .frame(width: 240)
+                    .background(
+                        GeometryReader { proxy in
+                            ZStack {
+                                Image(viewModel.selectedEventWallpaper)
+                                    .resizable()
+                                    .scaledToFill()
+                                Color.black.opacity(0.6)
+                            }
+                            .frame(width: proxy.size.width, height: proxy.size.height + 10)
+                            .clipped()
+                            .offset(y: -5)
+                        }
+                    )
                 }
             }
             .padding(.vertical, DS.f5)
@@ -178,7 +192,8 @@ struct ContentView: View {
                     name: item.name,
                     time: viewModel.formattedTime(item.time, use24h: viewModel.uses24HourTime),
                     isNext: viewModel.isNextPrayer(item.prayer),
-                    prayer: item.prayer
+                    prayer: item.prayer,
+                    isWhiteAccent: viewModel.appAccentColor == .white
                 )
             }
         }
@@ -288,6 +303,39 @@ struct ContentView: View {
         .padding(.bottom, DS.f3)
     }
 
+    // MARK: - Wallpaper Selector
+
+    private var wallpaperSelector: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(["AboutWallpaper", "EventWallpaper1", "EventWallpaper2"], id: \.self) { wallpaper in
+                    Button(action: {
+                        withAnimation {
+                            viewModel.selectedEventWallpaper = wallpaper
+                        }
+                    }) {
+                        Image(wallpaper)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 32, height: 32)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(
+                                        viewModel.selectedEventWallpaper == wallpaper ? Color.white : Color.clear,
+                                        lineWidth: 2
+                                    )
+                            )
+                            .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, DS.paddingH)
+            .padding(.vertical, 12)
+        }
+    }
+
     // MARK: - Ramadan Countdown Row
 
     private var ramadanCountdownRow: some View {
@@ -301,7 +349,7 @@ struct ContentView: View {
                     .frame(width: 28, height: 28)
                 Image(systemName: "moon.stars.fill")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(viewModel.isCurrentlyRamadan ? .white : .accentColor)
+                    .foregroundColor(viewModel.isCurrentlyRamadan ? (viewModel.appAccentColor == .white ? .black : .white) : .accentColor)
             }
 
             VStack(alignment: .leading, spacing: 1) {
@@ -343,6 +391,7 @@ struct PrayerTimeRow: View {
     let time: String
     let isNext: Bool
     let prayer: Prayer
+    let isWhiteAccent: Bool
     @State private var isHovered = false
 
     private var accent: Color { .accentColor }
@@ -356,7 +405,7 @@ struct PrayerTimeRow: View {
                     .frame(width: 28, height: 28)
                 Image(systemName: prayerIconName(prayer))
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(isNext ? .white : .primary.opacity(0.8))
+                    .foregroundColor(isNext ? (isWhiteAccent ? .black : .white) : .primary.opacity(0.8))
             }
 
             VStack(alignment: .leading, spacing: 1) {

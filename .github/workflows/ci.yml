@@ -1,0 +1,31 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Resolve Swift Packages
+        run: xcodebuild -resolvePackageDependencies -project DariSholat.xcodeproj
+
+      - name: Build Project
+        run: |
+          xcodebuild clean build \
+            -project DariSholat.xcodeproj \
+            -scheme DariSholat \
+            -destination 'platform=iOS Simulator,name=iPhone 15'

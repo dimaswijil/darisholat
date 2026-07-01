@@ -146,11 +146,12 @@ struct SettingsView: View {
                             Picker("", selection: $viewModel.appAccentColor) {
                                 ForEach(AppAccentColor.allCases) { color in
                                     HStack {
-                                        if color != .custom {
-                                            Circle()
-                                                .fill(color.swatchColor)
-                                                .frame(width: 10, height: 10)
-                                        }
+                                        Circle()
+                                            .fill(color.swatchColor)
+                                            .overlay(
+                                                Circle().strokeBorder(Color.primary.opacity(0.2), lineWidth: 0.5)
+                                            )
+                                            .frame(width: 10, height: 10)
                                         Text(color.displayName)
                                     }.tag(color)
                                 }
@@ -160,35 +161,7 @@ struct SettingsView: View {
                             .frame(width: 130)
                         }
 
-                        if viewModel.appAccentColor == .custom {
-                            settingsDivider
-                            
-                            settingsRow {
-                                Text("Custom Color")
-                                    .settingsLabel()
-                                Spacer()
-                                ColorPicker("", selection: Binding(
-                                    get: {
-                                        Color(red: viewModel.customAccentR,
-                                              green: viewModel.customAccentG,
-                                              blue: viewModel.customAccentB)
-                                    },
-                                    set: { newColor in
-                                        if let cgColor = newColor.cgColor, cgColor.numberOfComponents >= 3,
-                                           let components = cgColor.components {
-                                            viewModel.customAccentR = Double(components[0])
-                                            viewModel.customAccentG = Double(components[1])
-                                            viewModel.customAccentB = Double(components[2])
-                                        } else if let nsColor = NSColor(newColor).usingColorSpace(.deviceRGB) {
-                                            viewModel.customAccentR = Double(nsColor.redComponent)
-                                            viewModel.customAccentG = Double(nsColor.greenComponent)
-                                            viewModel.customAccentB = Double(nsColor.blueComponent)
-                                        }
-                                    }
-                                ), supportsOpacity: false)
-                                .labelsHidden()
-                            }
-                        }
+
 
                         Spacer(minLength: 16)
                     }
