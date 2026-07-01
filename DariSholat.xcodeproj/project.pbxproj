@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04A802DE2FAACA43009198C7 /* DariSholatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */; };
-		04A802E02FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A802DF2FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift */; };
+		04DE706B2FF551DA0021880B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
 		DA0002000000000000000001 /* DariSholatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000001 /* DariSholatApp.swift */; };
 		DA0002000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000002 /* ContentView.swift */; };
 		DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000003 /* PrayerTimeViewModel.swift */; };
@@ -81,6 +81,53 @@
 			path = DariSholatUITests;
 			sourceTree = "<group>";
 		};
+		337A1A83864F77435A867ABB /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000003 /* PrayerTimeViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		566A39F01F959571D7744EBA /* App */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000001 /* DariSholatApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		9BCC6A5680B6ED6300FBCFE0 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000004 /* LocationManager.swift */,
+				DA0001000000000000000005 /* NotificationManager.swift */,
+				DA000100000000000000000E /* CalendarManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		B6684A283C0AEFD3237EC6C0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DA000100000000000000000C /* Assets.xcassets */,
+				DA000100000000000000000A /* Info.plist */,
+				DA000100000000000000000B /* DariSholat.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D10AE3BCBDF57A953D7DBCE5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000002 /* ContentView.swift */,
+				DA0001000000000000000008 /* AboutView.swift */,
+				DA0001000000000000000007 /* SettingsView.swift */,
+				DA0001000000000000000006 /* VisualEffectView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		DA0003000000000000000001 = {
 			isa = PBXGroup;
 			children = (
@@ -94,19 +141,12 @@
 		DA0003000000000000000002 /* DariSholat */ = {
 			isa = PBXGroup;
 			children = (
-				DA0001000000000000000001 /* DariSholatApp.swift */,
-				DA0001000000000000000002 /* ContentView.swift */,
-				DA0001000000000000000003 /* PrayerTimeViewModel.swift */,
-				DA0001000000000000000004 /* LocationManager.swift */,
-				DA0001000000000000000005 /* NotificationManager.swift */,
-				DA0001000000000000000006 /* VisualEffectView.swift */,
-				DA0001000000000000000007 /* SettingsView.swift */,
-				DA0001000000000000000008 /* AboutView.swift */,
-				DA0001000000000000000009 /* Localization.swift */,
-				DA000100000000000000000E /* CalendarManager.swift */,
-				DA000100000000000000000A /* Info.plist */,
-				DA000100000000000000000B /* DariSholat.entitlements */,
-				DA000100000000000000000C /* Assets.xcassets */,
+				566A39F01F959571D7744EBA /* App */,
+				D10AE3BCBDF57A953D7DBCE5 /* Views */,
+				337A1A83864F77435A867ABB /* ViewModels */,
+				9BCC6A5680B6ED6300FBCFE0 /* Managers */,
+				F28ADE1AEEA1FE2CF716D91E /* Utils */,
+				B6684A283C0AEFD3237EC6C0 /* Resources */,
 			);
 			path = DariSholat;
 			sourceTree = "<group>";
@@ -125,6 +165,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F28ADE1AEEA1FE2CF716D91E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000009 /* Localization.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -216,6 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04DE706B2FF551DA0021880B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,7 +284,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A802DE2FAACA43009198C7 /* DariSholatUITests.swift in Sources */,
-				04A802E02FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,12 +364,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DariSholat/DariSholat.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DariSholat/Resources/DariSholat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DariSholat/Info.plist;
+				INFOPLIST_FILE = DariSholat/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -340,12 +388,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DariSholat/DariSholat.entitlements;
+				CODE_SIGN_ENTITLEMENTS = DariSholat/Resources/DariSholat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = DariSholat/Info.plist;
+				INFOPLIST_FILE = DariSholat/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

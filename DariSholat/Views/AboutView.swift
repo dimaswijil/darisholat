@@ -70,17 +70,13 @@ struct AboutView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 21) {
 
-                    // App Icon & Name
+                    // App Name
                     VStack(spacing: 8) {
-                        Image(systemName: "moon.stars.fill")
-                            .font(.system(size: 34))
-                            .foregroundColor(.accentColor)
-                            .padding(.top, 21)
-
                         Text("DariSholat")
                             .font(.system(size: 15, weight: .bold, design: .rounded))
                             .tracking(-0.4)
                             .foregroundColor(.primary)
+                            .padding(.top, 65)
 
                         Text("\(L10n.version(language)) 1.0.0")
                             .font(.system(size: CGFloat.fontSmall, weight: .medium))
