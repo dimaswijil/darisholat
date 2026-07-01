@@ -78,7 +78,7 @@ struct AboutView: View {
                             .foregroundColor(.primary)
                             .padding(.top, 65)
 
-                        Text("\(L10n.version(language)) 1.0.0")
+                        Text("\(L10n.version(language)) 1.1.0")
                             .font(.system(size: CGFloat.fontSmall, weight: .medium))
                             .foregroundColor(.secondary)
                     }
