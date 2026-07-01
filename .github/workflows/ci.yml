@@ -28,4 +28,4 @@ jobs:
           xcodebuild clean build \
             -project DariSholat.xcodeproj \
             -scheme DariSholat \
-            -destination 'platform=iOS Simulator,name=iPhone 15'
+            -destination 'platform=macOS'
