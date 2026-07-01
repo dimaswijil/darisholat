@@ -3,7 +3,7 @@
 > Aplikasi menu bar macOS yang ringan dan elegan untuk memantau waktu sholat harian langsung dari desktop kamu.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/54bbe120-5ea2-4391-abad-3a6ae4554811" width="450" alt="DariSholat Preview">
+  <img src="assets/screenshots/main_view.png" width="450" alt="DariSholat Preview">
 </p>
 
 <p align="center">
@@ -46,7 +46,10 @@
 ## 🖼️ Tampilan Aplikasi
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/54bbe120-5ea2-4391-abad-3a6ae4554811" width="280" alt="Menu utama DariSholat">
+  <img src="assets/screenshots/main_view.png" width="450" alt="Menu utama DariSholat">
+</p>
+<p align="center">
+  <img src="assets/screenshots/settings_view.png" width="450" alt="Pengaturan DariSholat">
 </p>
 
 > Waktu sholat hari ini untuk Surabaya, dengan countdown real-time di menu bar.
