@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
-  <img src="https://img.shields.io/badge/Versi-1.0.0-blue?style=flat-square" alt="v1.0.0">
+  <img src="https://img.shields.io/badge/Versi-1.1.0-blue?style=flat-square" alt="v1.1.0">
   <img src="https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=flat-square" alt="Active Development">
 </p>
 
@@ -46,13 +46,19 @@
 ## 🖼️ Tampilan Aplikasi
 
 <p align="center">
-  <img src="assets/screenshots/main_view.png" width="450" alt="Menu utama DariSholat">
+  <img src="assets/screenshots/main_view.png" width="700" alt="Menu utama DariSholat">
 </p>
-<p align="center">
-  <img src="assets/screenshots/settings_view.png" width="450" alt="Pengaturan DariSholat">
-</p>
+<p align="center"><em>Tampilan utama — Jadwal sholat dengan countdown real-time dan kalender Hijriah</em></p>
 
-> Waktu sholat hari ini untuk Surabaya, dengan countdown real-time di menu bar.
+<p align="center">
+  <img src="assets/screenshots/settings_view.png" width="700" alt="Pengaturan DariSholat">
+</p>
+<p align="center"><em>Halaman pengaturan — Display, tema, metode perhitungan, lokasi, dan bahasa</em></p>
+
+<p align="center">
+  <img src="assets/screenshots/about_view.png" width="700" alt="Tentang DariSholat">
+</p>
+<p align="center"><em>Halaman tentang — Informasi developer dan link repositori</em></p>
 
 ---
 
@@ -130,18 +136,19 @@ Tekan `⌘R` atau klik tombol **Run** di Xcode. Setelah berhasil, ikon DariShola
 ## 📁 Struktur Proyek
 
 ```
-darisholat-mac/
+DariSholat/
 ├── DariSholat/
-│   ├── App/                  # Entry point aplikasi
-│   ├── Views/                # Komponen tampilan SwiftUI
-│   ├── Models/               # Model data waktu sholat
-│   ├── Helpers/              # Utility dan extension
-│   └── Assets.xcassets/      # Ikon dan aset visual
+│   ├── App/                  # Entry point aplikasi (DariSholatApp.swift)
+│   ├── Views/                # Komponen tampilan SwiftUI (ContentView, SettingsView, AboutView, VisualEffectView)
+│   ├── ViewModels/           # ViewModel (PrayerTimeViewModel)
+│   ├── Managers/             # Manager (LocationManager, NotificationManager, CalendarManager)
+│   ├── Utils/                # Utility (Localization)
+│   └── Resources/            # Assets.xcassets, Info.plist, Entitlements
+├── DariSholatUITests/        # UI Tests
+├── .github/workflows/        # GitHub Actions CI
 ├── DariSholat.xcodeproj/
 └── README.md
 ```
-
-> Struktur di atas adalah perkiraan umum — sesuaikan dengan struktur aktual proyekmu.
 
 ---
 
