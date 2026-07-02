@@ -43,7 +43,7 @@
 
 ---
 
-## 🖼️ Tampilan Aplikasi
+## Tampilan Aplikasi
 
 <p align="center">
   <img src="assets/screenshots/main_view.png" width="700" alt="Menu utama DariSholat">
