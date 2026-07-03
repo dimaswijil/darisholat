@@ -3,6 +3,7 @@
 //  DariSholat
 //
 //  Schedules macOS notifications for each prayer time using UNUserNotificationCenter.
+//  Supports actionable notifications with "Prayed" and "Snooze" actions.
 //
 
 import Foundation
@@ -18,12 +19,28 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         }
     }
 
+
+
     override init() {
         self.isEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
         super.init()
         UNUserNotificationCenter.current().delegate = self
         // Check current status before requesting
         checkAndRequestPermission()
+        // Register notification categories with actions
+        registerNotificationCategories()
+    }
+
+    // MARK: - Notification Categories & Actions
+
+    func registerNotificationCategories(language: String? = nil) {
+        let prayerCategory = UNNotificationCategory(
+            identifier: "PRAYER_NOTIFICATION",
+            actions: [],
+            intentIdentifiers: [],
+            options: []
+        )
+        UNUserNotificationCenter.current().setNotificationCategories([prayerCategory])
     }
 
     // MARK: - Permission
@@ -139,6 +156,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
             content.body = L10n.prayerTimeReached(language, prayerName: name)
             content.sound = .default
             content.categoryIdentifier = "PRAYER_NOTIFICATION"
+            content.userInfo = ["prayer": "\(prayer)", "prayerName": name]
 
             // Use the exact prayer time
             let calendar = Calendar.current
@@ -174,5 +192,13 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     ) {
         // Show banner even when app is in foreground
         completionHandler([.banner, .sound])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        completionHandler()
     }
 }

@@ -132,7 +132,7 @@ struct SettingsView: View {
                                 }
                         }
 
-                        settingsDivider
+
 
                         // ───────────────────────────────────────────────
                         // THEME

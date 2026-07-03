@@ -93,11 +93,12 @@ struct ContentView: View {
                     // Vertical separator
                     Divider()
 
-                    // Right Column (Calendar events)
+                    // Right Column (Calendar events or Habits)
                     VStack(spacing: 0) {
                         calendarEventsSection
+                            .transition(.opacity)
                         Spacer(minLength: 0)
-                        wallpaperSelector
+                        wallpaperAndToggleBar
                     }
                     .frame(width: 240)
                     .background(
@@ -116,6 +117,8 @@ struct ContentView: View {
                 }
             }
             .padding(.vertical, DS.f5)
+
+
         }
         .frame(width: {
             switch viewModel.currentScreen {
@@ -245,12 +248,12 @@ struct ContentView: View {
                         .foregroundColor(.accentColor)
                     Text(L10n.events(viewModel.selectedLanguage))
                         .font(.system(size: DS.fontSmall, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.white.opacity(0.8))
                 }
                 Spacer()
                 Text(viewModel.currentHijriDate + (viewModel.selectedLanguage == "id" ? " H" : " AH"))
                     .font(.system(size: DS.fontSmall, weight: .medium, design: .monospaced))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
             }
             .padding(.horizontal, DS.paddingH)
             .padding(.top, DS.rowV)
@@ -269,10 +272,10 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "lock.shield")
                             .font(.system(size: DS.fontSmall))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.white.opacity(0.8))
                         Text(L10n.grantCalendarAccess(viewModel.selectedLanguage))
-                            .font(.system(size: DS.fontBody, weight: .regular))
-                            .foregroundColor(.accentColor)
+                            .font(.system(size: DS.fontBody, weight: .semibold))
+                            .foregroundColor(.white)
                     }
                     .padding(.horizontal, DS.paddingH)
                     .padding(.vertical, DS.rowV)
@@ -284,8 +287,8 @@ struct ContentView: View {
                 // No events
                 HStack {
                     Text(L10n.noEvents(viewModel.selectedLanguage))
-                        .font(.system(size: DS.fontBody, weight: .regular))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: DS.fontBody, weight: .medium))
+                        .foregroundColor(.white.opacity(0.8))
                     Spacer()
                 }
                 .padding(.horizontal, DS.paddingH)
@@ -303,37 +306,45 @@ struct ContentView: View {
         .padding(.bottom, DS.f3)
     }
 
-    // MARK: - Wallpaper Selector
+    // MARK: - Wallpaper Selector + Habits Toggle
 
-    private var wallpaperSelector: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(["AboutWallpaper", "EventWallpaper1", "EventWallpaper2"], id: \.self) { wallpaper in
-                    Button(action: {
-                        withAnimation {
-                            viewModel.selectedEventWallpaper = wallpaper
-                        }
-                    }) {
-                        Image(wallpaper)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(
-                                        viewModel.selectedEventWallpaper == wallpaper ? Color.white : Color.clear,
-                                        lineWidth: 2
-                                    )
-                            )
-                            .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
+    private var wallpaperAndToggleBar: some View {
+        HStack(spacing: 12) {
+            // Wallpaper options
+            ForEach(["AboutWallpaper", "EventWallpaper1", "EventWallpaper2"], id: \.self) { wallpaper in
+                Button(action: {
+                    withAnimation {
+                        viewModel.selectedEventWallpaper = wallpaper
                     }
-                    .buttonStyle(.plain)
+                }) {
+                    Image(wallpaper)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 32, height: 32)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .strokeBorder(
+                                    viewModel.selectedEventWallpaper == wallpaper ? Color.white : Color.clear,
+                                    lineWidth: 2
+                                )
+                        )
+                        .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
                 }
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal, DS.paddingH)
-            .padding(.vertical, 12)
+
+            Spacer()
+
+
         }
+        .padding(.horizontal, DS.paddingH)
+        .padding(.vertical, 12)
+    }
+
+    // Keep old name for backward compatibility if referenced elsewhere
+    private var wallpaperSelector: some View {
+        wallpaperAndToggleBar
     }
 
     // MARK: - Ramadan Countdown Row
@@ -343,25 +354,23 @@ struct ContentView: View {
             // Crescent moon icon
             ZStack {
                 Circle()
-                    .fill(viewModel.isCurrentlyRamadan
-                          ? Color.accentColor
-                          : Color.accentColor.opacity(0.12))
+                    .fill(Color.white.opacity(0.15))
                     .frame(width: 28, height: 28)
                 Image(systemName: "moon.stars.fill")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(viewModel.isCurrentlyRamadan ? (viewModel.appAccentColor == .white ? .black : .white) : .accentColor)
+                    .foregroundColor(.white)
             }
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(L10n.ramadan(viewModel.selectedLanguage))
                     .font(.system(size: DS.fontBody, weight: viewModel.isCurrentlyRamadan ? .semibold : .regular))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.white)
                     .lineLimit(1)
 
                 if viewModel.isCurrentlyRamadan {
                     Text(viewModel.ramadanCountdownText)
                         .font(.system(size: DS.fontSmall - 1, weight: .medium))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.white.opacity(0.9))
                 }
             }
 
@@ -370,7 +379,7 @@ struct ContentView: View {
             if !viewModel.isCurrentlyRamadan {
                 Text(viewModel.ramadanCountdownText)
                     .font(.system(size: DS.fontBody, weight: .regular, design: .monospaced))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.white.opacity(0.8))
                     .monospacedDigit()
             }
         }
@@ -447,28 +456,28 @@ struct CalendarEventRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Circular Calendar Icon with light background of accent color (green)
             ZStack {
                 Circle()
-                    .fill(Color.accentColor.opacity(0.12))
+                    .fill(Color.white.opacity(0.15))
                     .frame(width: 28, height: 28)
                 Image(systemName: "calendar")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(.white)
             }
 
             Text(event.title)
-                .font(.system(size: DS.fontBody, weight: .regular))
-                .foregroundColor(.primary)
+                .font(.system(size: DS.fontBody, weight: .semibold))
+                .foregroundColor(.white)
                 .lineLimit(1)
                 .truncationMode(.tail)
 
             Spacer(minLength: 8)
 
             Text(event.countdownText(lang: lang))
-                .font(.system(size: DS.fontBody, weight: .regular, design: .monospaced))
-                .foregroundColor(.secondary)
+                .font(.system(size: DS.fontBody, weight: .medium, design: .monospaced))
+                .foregroundColor(.white.opacity(0.8))
                 .monospacedDigit()
+                .shadow(color: .black.opacity(0.3), radius: 1, x: 0, y: 1)
         }
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.rowV)

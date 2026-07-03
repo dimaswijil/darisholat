@@ -579,4 +579,132 @@ struct L10n {
         default:   return "Until Ramadan"
         }
     }
+
+    // MARK: - Prayer Habits / Tracking
+
+    static func habits(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "العادات"
+        case "id": return "Kebiasaan"
+        case "tr": return "Alışkanlıklar"
+        case "ja": return "習慣"
+        case "kk": return "Әдеттер"
+        case "fa": return "عادات"
+        case "ur": return "عادات"
+        case "ms": return "Kebiasaan"
+        default:   return "Habits"
+        }
+    }
+
+    static func prayedNow(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "صليت"
+        case "id": return "Sudah Sholat"
+        case "tr": return "Kıldım"
+        case "ja": return "礼拝済み"
+        case "kk": return "Оқыдым"
+        case "fa": return "نماز خواندم"
+        case "ur": return "نماز پڑھ لی"
+        case "ms": return "Sudah Solat"
+        default:   return "Prayed"
+        }
+    }
+
+    static func snooze(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "تأجيل"
+        case "id": return "Tunda"
+        case "tr": return "Ertele"
+        case "ja": return "後で"
+        case "kk": return "Кейінге қалдыру"
+        case "fa": return "تعویق"
+        case "ur": return "مؤخر کریں"
+        case "ms": return "Tunda"
+        default:   return "Snooze"
+        }
+    }
+
+    static func snoozeMinutes(_ lang: String, minutes: Int) -> String {
+        switch lang {
+        case "ar": return "\(minutes) دقيقة"
+        case "id": return "\(minutes) menit"
+        case "tr": return "\(minutes) dakika"
+        case "ja": return "\(minutes)分"
+        case "kk": return "\(minutes) минут"
+        case "fa": return "\(minutes) دقیقه"
+        case "ur": return "\(minutes) منٹ"
+        case "ms": return "\(minutes) minit"
+        default:   return "\(minutes) min"
+        }
+    }
+
+    static func snoozedReminder(_ lang: String, prayerName: String) -> String {
+        switch lang {
+        case "ar": return "تذكير: \(prayerName)"
+        case "id": return "Pengingat: \(prayerName)"
+        case "tr": return "Hatırlatma: \(prayerName)"
+        case "ja": return "リマインダー: \(prayerName)"
+        case "kk": return "Ескерту: \(prayerName)"
+        case "fa": return "یادآوری: \(prayerName)"
+        case "ur": return "یاد دہانی: \(prayerName)"
+        case "ms": return "Peringatan: \(prayerName)"
+        default:   return "Reminder: \(prayerName)"
+        }
+    }
+
+    static func prayerCompleted(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "تمت"
+        case "id": return "Selesai"
+        case "tr": return "Tamamlandı"
+        case "ja": return "完了"
+        case "kk": return "Аяқталды"
+        case "fa": return "انجام شد"
+        case "ur": return "مکمل"
+        case "ms": return "Selesai"
+        default:   return "Completed"
+        }
+    }
+
+    static func prayerMissed(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "فائتة"
+        case "id": return "Terlewat"
+        case "tr": return "Kaçırıldı"
+        case "ja": return "未実施"
+        case "kk": return "Өткізіп алынды"
+        case "fa": return "از دست رفته"
+        case "ur": return "قضا"
+        case "ms": return "Terlepas"
+        default:   return "Missed"
+        }
+    }
+
+    static func todayProgress(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "اليوم"
+        case "id": return "Hari Ini"
+        case "tr": return "Bugün"
+        case "ja": return "今日"
+        case "kk": return "Бүгін"
+        case "fa": return "امروز"
+        case "ur": return "آج"
+        case "ms": return "Hari Ini"
+        default:   return "Today"
+        }
+    }
+
+    static func prayerTimeArrived(_ lang: String, prayerName: String) -> String {
+        switch lang {
+        case "ar": return "حان وقت صلاة \(prayerName)"
+        case "id": return "Waktu \(prayerName) telah tiba"
+        case "tr": return "\(prayerName) vakti geldi"
+        case "ja": return "\(prayerName)の時間です"
+        case "kk": return "\(prayerName) уақыты келді"
+        case "fa": return "وقت نماز \(prayerName) رسید"
+        case "ur": return "\(prayerName) کا وقت آ گیا ہے"
+        case "ms": return "Waktu \(prayerName) telah tiba"
+        default:   return "\(prayerName) time has arrived"
+        }
+    }
 }
