@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
-  <img src="https://img.shields.io/badge/Versi-1.1.0-blue?style=flat-square" alt="v1.1.0">
+  <img src="https://img.shields.io/badge/Versi-1.1.0-blue?style=flat-square" alt="v1.1.2">
   <img src="https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=flat-square" alt="Active Development">
 </p>
 
