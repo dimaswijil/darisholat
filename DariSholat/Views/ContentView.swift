@@ -15,6 +15,7 @@
 
 import SwiftUI
 import Adhan
+import AppKit
 
 // Navigation state moved to ViewModel
 
@@ -37,7 +38,7 @@ private enum DS {
     static let dividerOpacity: CGFloat = 0.35
 
     // Typography (Fibonacci-scaled)
-    static let fontTitle:   CGFloat = 15            // ≈ 13 × φ
+    static let fontTitle:   CGFloat = 15            // ≈ 13 × do
     static let fontBody:    CGFloat = f13
     static let fontSmall:   CGFloat = 11            // ≈ 8 × φ
     static let fontMono:    CGFloat = f13
@@ -47,6 +48,9 @@ private enum DS {
 
 struct ContentView: View {
     @ObservedObject var viewModel: PrayerTimeViewModel
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State private var hasAppeared = false
+    @State private var urgencyPulse = false
 
     var body: some View {
         ZStack {
@@ -69,7 +73,7 @@ struct ContentView: View {
                             .transition(.opacity)
                     case .settings:
                         SettingsView(viewModel: viewModel) {
-                            withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
+                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
                         }
                         .transition(.asymmetric(
                             insertion: .move(edge: .trailing).combined(with: .opacity),
@@ -77,7 +81,7 @@ struct ContentView: View {
                         ))
                     case .about:
                         AboutView(language: viewModel.selectedLanguage) {
-                            withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
+                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
                         }
                         .transition(.asymmetric(
                             insertion: .move(edge: .trailing).combined(with: .opacity),
@@ -87,7 +91,7 @@ struct ContentView: View {
                 }
                 .frame(width: (viewModel.currentScreen == .settings || viewModel.currentScreen == .about)
                        ? (DS.panelWidth + 240) : DS.panelWidth)
-                .animation(.easeInOut(duration: 0.15), value: viewModel.currentScreen)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: viewModel.currentScreen)
 
                 if viewModel.currentScreen == .main && viewModel.showCalendarEvents {
                     // Vertical separator
@@ -107,7 +111,14 @@ struct ContentView: View {
                                 Image(viewModel.selectedEventWallpaper)
                                     .resizable()
                                     .scaledToFill()
+                                    .id(viewModel.selectedEventWallpaper)
+                                    .transition(.opacity)
+                                    .animation(reduceMotion ? nil : .easeInOut(duration: 0.4), value: viewModel.selectedEventWallpaper)
                                 Color.black.opacity(0.6)
+                                // Time-based tint overlay
+                                prayerTimeTintColor
+                                    .opacity(0.18)
+                                    .blendMode(.overlay)
                             }
                             .frame(width: proxy.size.width, height: proxy.size.height + 10)
                             .clipped()
@@ -134,6 +145,15 @@ struct ContentView: View {
                       viewModel.selectedLanguage == "ar" ? .rightToLeft : .leftToRight)
         .tint(viewModel.resolvedAccentColor)
         .accentColor(viewModel.resolvedAccentColor)
+        .onAppear {
+            hasAppeared = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                withAnimation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.8)) {
+                    hasAppeared = true
+                }
+            }
+        }
+        .onDisappear { hasAppeared = false }
     }
 
     // MARK: - Left Main Column
@@ -175,29 +195,65 @@ struct ContentView: View {
                     Text(viewModel.nextPrayerDisplayName)
                         .font(.system(size: DS.fontSmall, weight: .regular))
                         .foregroundColor(.accentColor)
-                    Text(viewModel.countdownText)
-                        .font(.system(size: DS.fontSmall, weight: .medium, design: .monospaced))
-                        .foregroundColor(.accentColor)
-                        .monospacedDigit()
+                    RollingDigitText(
+                        text: viewModel.countdownText,
+                        font: .system(size: DS.fontSmall, weight: .medium, design: .monospaced),
+                        color: urgencyColor
+                    )
+                    .scaleEffect(isUrgent ? (urgencyPulse ? 1.08 : 1.0) : 1.0)
+                    .animation(
+                        reduceMotion ? nil : (isUrgent
+                            ? .easeInOut(duration: 1.0).repeatForever(autoreverses: true)
+                            : .default),
+                        value: urgencyPulse
+                    )
                 }
             }
         }
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.headerV)
+        .onAppear { if isUrgent { urgencyPulse = true } }
+        .onChange(of: isUrgent) { newValue in urgencyPulse = newValue }
+    }
+
+    /// True when < 5 minutes remain
+    private var isUrgent: Bool {
+        viewModel.countdownSeconds > 0 && viewModel.countdownSeconds <= 300
+    }
+
+    /// Shifts from accent → warm orange → red as time decreases
+    private var urgencyColor: Color {
+        let secs = viewModel.countdownSeconds
+        guard secs > 0 && secs <= 300 else { return viewModel.resolvedAccentColor }
+        let ratio = Double(secs) / 300.0 // 1.0 = 5min, 0.0 = 0min
+        if ratio > 0.5 {
+            // accent → orange (300s → 150s)
+            return viewModel.resolvedAccentColor
+        } else if ratio > 0.15 {
+            // orange zone (150s → 45s)
+            return Color(red: 0.95, green: 0.55, blue: 0.20)
+        } else {
+            // red zone (< 45s)
+            return Color(red: 0.92, green: 0.28, blue: 0.28)
+        }
     }
 
     // MARK: - Prayer List
 
     private var prayerList: some View {
         VStack(spacing: 0) {
-            ForEach(viewModel.prayerSchedule) { item in
+            ForEach(Array(viewModel.prayerSchedule.enumerated()), id: \.element.id) { index, item in
                 PrayerTimeRow(
                     name: item.name,
                     time: viewModel.formattedTime(item.time, use24h: viewModel.uses24HourTime),
                     isNext: viewModel.isNextPrayer(item.prayer),
                     prayer: item.prayer,
-                    isWhiteAccent: viewModel.appAccentColor == .white
+                    isWhiteAccent: viewModel.appAccentColor == .white,
+                    progress: viewModel.isNextPrayer(item.prayer) ? viewModel.nextPrayerProgress : nil
                 )
+                .opacity(hasAppeared ? 1 : 0)
+                .offset(y: hasAppeared ? 0 : 8)
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.35).delay(Double(index) * 0.04), value: hasAppeared)
             }
         }
         .padding(.vertical, DS.f3)
@@ -208,13 +264,16 @@ struct ContentView: View {
     private var bottomMenu: some View {
         VStack(spacing: 0) {
             menuBtn(L10n.settings(viewModel.selectedLanguage), color: .primary) {
-                withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .settings }
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .settings }
             }
             menuBtn(L10n.about(viewModel.selectedLanguage), color: .primary) {
-                withAnimation(.easeInOut(duration: 0.15)) { viewModel.currentScreen = .about }
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .about }
             }
             hairline
             menuBtn(L10n.quit(viewModel.selectedLanguage), color: .red) {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
                 NSApplication.shared.terminate(nil)
             }
         }
@@ -311,9 +370,10 @@ struct ContentView: View {
     private var wallpaperAndToggleBar: some View {
         HStack(spacing: 12) {
             // Wallpaper options
-            ForEach(["AboutWallpaper", "EventWallpaper1", "EventWallpaper2"], id: \.self) { wallpaper in
+            ForEach(["AboutWallpaper", "EventWallpaper1", "EventWallpaper2", "EventWallpaper3"], id: \.self) { wallpaper in
                 Button(action: {
-                    withAnimation {
+                    NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
+                    withAnimation(reduceMotion ? nil : .default) {
                         viewModel.selectedEventWallpaper = wallpaper
                     }
                 }) {
@@ -391,6 +451,22 @@ struct ContentView: View {
     private var hairline: some View {
         Divider().opacity(DS.dividerOpacity)
     }
+
+    // MARK: - Time-Based Tint Color
+
+    private var prayerTimeTintColor: Color {
+        guard let prayer = viewModel.currentPrayer else {
+            return Color(red: 0.08, green: 0.10, blue: 0.25) // default night
+        }
+        switch prayer {
+        case .fajr:    return Color(red: 0.15, green: 0.20, blue: 0.50) // deep blue dawn
+        case .sunrise: return Color(red: 0.95, green: 0.75, blue: 0.35) // warm gold
+        case .dhuhr:   return Color(red: 0.95, green: 0.85, blue: 0.45) // bright golden
+        case .asr:     return Color(red: 0.92, green: 0.65, blue: 0.30) // amber orange
+        case .maghrib: return Color(red: 0.85, green: 0.35, blue: 0.25) // reddish sunset
+        case .isha:    return Color(red: 0.12, green: 0.10, blue: 0.30) // dark indigo
+        }
+    }
 }
 
 // MARK: - Prayer Time Row
@@ -401,17 +477,48 @@ struct PrayerTimeRow: View {
     let isNext: Bool
     let prayer: Prayer
     let isWhiteAccent: Bool
+    var progress: Double? = nil  // 0.0–1.0 for next prayer progress ring
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var isHovered = false
+    @State private var isPulsing = false
 
     private var accent: Color { .accentColor }
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            // Circular Icon
+            // Circular Icon with optional pulsing glow + progress ring
             ZStack {
+                // Pulsing glow behind next prayer icon
+                if isNext {
+                    Circle()
+                        .fill(accent.opacity(0.25))
+                        .frame(width: 34, height: 34)
+                        .scaleEffect(isPulsing ? 1.15 : 0.95)
+                        .opacity(isPulsing ? 0.0 : 0.5)
+                        .animation(
+                            reduceMotion ? nil : .easeInOut(duration: 2.0).repeatForever(autoreverses: true),
+                            value: isPulsing
+                        )
+                }
+
+                // Progress ring
+                if let progress = progress, isNext {
+                    Circle()
+                        .trim(from: 0, to: CGFloat(progress))
+                        .stroke(accent.opacity(0.5), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                        .frame(width: 32, height: 32)
+                        .rotationEffect(.degrees(-90))
+                }
+
                 Circle()
                     .fill(isNext ? accent : Color.primary.opacity(0.08))
                     .frame(width: 28, height: 28)
+                    .scaleEffect(isNext && isPulsing ? 1.06 : 1.0)
+                    .animation(
+                        reduceMotion ? nil : (isNext ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : .default),
+                        value: isPulsing
+                    )
+
                 Image(systemName: prayerIconName(prayer))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(isNext ? (isWhiteAccent ? .black : .white) : .primary.opacity(0.8))
@@ -432,7 +539,15 @@ struct PrayerTimeRow: View {
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, isNext ? DS.rowV + 2 : DS.rowV)
         .background(isHovered ? Color.primary.opacity(0.04) : Color.clear)
-        .onHover { h in withAnimation(.easeInOut(duration: 0.1)) { isHovered = h } }
+        .scaleEffect(isHovered ? 1.01 : 1.0)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: isHovered)
+        .onHover { h in withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.1)) { isHovered = h } }
+        .onAppear {
+            if isNext { isPulsing = true }
+        }
+        .onChange(of: isNext) { newValue in
+            isPulsing = newValue
+        }
     }
 
     private func prayerIconName(_ prayer: Prayer) -> String {
@@ -452,6 +567,7 @@ struct PrayerTimeRow: View {
 struct CalendarEventRow: View {
     let event: CalendarEventItem
     let lang: String
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var isHovered = false
 
     var body: some View {
@@ -482,7 +598,7 @@ struct CalendarEventRow: View {
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.rowV)
         .background(isHovered ? Color.primary.opacity(0.04) : Color.clear)
-        .onHover { h in withAnimation(.easeInOut(duration: 0.1)) { isHovered = h } }
+        .onHover { h in withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.1)) { isHovered = h } }
         .help(event.tooltipText(lang: lang))
     }
 }
@@ -490,11 +606,54 @@ struct CalendarEventRow: View {
 // MARK: - Hover Button Style
 
 struct HoverMenuButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var isHovered = false
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background(isHovered || configuration.isPressed ? Color.primary.opacity(0.05) : Color.clear)
-            .onHover { h in withAnimation(.easeInOut(duration: 0.1)) { isHovered = h } }
+            .scaleEffect(isHovered ? 1.01 : 1.0)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: isHovered)
+            .onHover { h in withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.1)) { isHovered = h } }
+    }
+}
+
+// MARK: - Rolling Digit Text (macOS 13+ compatible)
+
+/// Animates each character individually with a vertical slide transition.
+/// Provides an airport-departure-board feel for countdown text.
+struct RollingDigitText: View {
+    let text: String
+    let font: Font
+    let color: Color
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(text.enumerated()), id: \.offset) { index, char in
+                SingleCharView(char: char, font: font, color: color)
+                    .id("\(index)-\(char)")
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal:   .move(edge: .top).combined(with: .opacity)
+                    ))
+            }
+        }
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: text)
+        .clipped()
+    }
+}
+
+/// Renders a single character in a fixed-width slot for digit alignment.
+private struct SingleCharView: View {
+    let char: Character
+    let font: Font
+    let color: Color
+
+    var body: some View {
+        Text(String(char))
+            .font(font)
+            .foregroundColor(color)
+            .monospacedDigit()
     }
 }
 

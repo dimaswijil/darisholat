@@ -170,6 +170,9 @@ class PrayerTimeViewModel: ObservableObject {
     @Published var nextPrayerDisplayName: String = ""
     @Published var nextPrayerIconName: String = "moon.stars.fill"
     @Published var currentPrayerDisplayName: String = ""
+    @Published var nextPrayerProgress: Double = 0.0  // 0.0–1.0 elapsed ratio
+    @Published var currentPrayer: Prayer? = nil
+    @Published var countdownSeconds: Int = 0          // raw seconds remaining for urgency detection
     @Published var prayerSchedule: [PrayerScheduleItem] = []
     @Published var currentHijriDate: String = ""
     @Published var cityName: String = "Mendeteksi..."
@@ -402,6 +405,9 @@ class PrayerTimeViewModel: ObservableObject {
         guard let prayers = prayerTimes else {
             menuBarText  = "DariSholat"
             countdownText = "--:--:--"
+            nextPrayerProgress = 0.0
+            currentPrayer = nil
+            countdownSeconds = 0
             return
         }
 
@@ -411,6 +417,9 @@ class PrayerTimeViewModel: ObservableObject {
         // Current prayer
         if let current = prayers.currentPrayer(at: now) {
             currentPrayerDisplayName = localizedPrayerName(current, lang: lang)
+            currentPrayer = current
+        } else {
+            currentPrayer = nil
         }
 
         // Next prayer countdown
@@ -420,11 +429,23 @@ class PrayerTimeViewModel: ObservableObject {
             nextPrayerDisplayName = prayerName
             nextPrayerIconName = prayerIconName(nextPrayer)
 
+            // Calculate progress (elapsed ratio between current and next prayer)
+            if let current = prayers.currentPrayer(at: now) {
+                let currentTime = prayers.time(for: current)
+                let totalInterval = nextTime.timeIntervalSince(currentTime)
+                let elapsed = now.timeIntervalSince(currentTime)
+                nextPrayerProgress = totalInterval > 0 ? min(max(elapsed / totalInterval, 0.0), 1.0) : 0.0
+            } else {
+                nextPrayerProgress = 0.0
+            }
+
             let diff = nextTime.timeIntervalSince(now)
             if diff > 0 {
-                let h = Int(diff) / 3600
-                let m = (Int(diff) % 3600) / 60
-                let s = Int(diff) % 60
+                let totalSec = Int(diff)
+                countdownSeconds = totalSec
+                let h = totalSec / 3600
+                let m = (totalSec % 3600) / 60
+                let s = totalSec % 60
 
                 // Countdown: "1:52:23" (no leading zero on hours)
                 countdownText = h > 0
@@ -443,8 +464,11 @@ class PrayerTimeViewModel: ObservableObject {
             } else {
                 menuBarText   = "\(prayerName) \(L10n.now(lang))"
                 countdownText = L10n.now(lang)
+                nextPrayerProgress = 1.0
+                countdownSeconds = 0
             }
         } else {
+            nextPrayerProgress = 0.0
             calculateTomorrowFajr(prayers: prayers, now: now, lang: lang)
         }
     }

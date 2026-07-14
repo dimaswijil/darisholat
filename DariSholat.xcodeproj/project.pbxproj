@@ -13,7 +13,6 @@
 		DA0002000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000002 /* ContentView.swift */; };
 		DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000003 /* PrayerTimeViewModel.swift */; };
 		DA0002000000000000000004 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000004 /* LocationManager.swift */; };
-		DA0002000000000000000005 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000005 /* NotificationManager.swift */; };
 		DA0002000000000000000006 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000006 /* VisualEffectView.swift */; };
 		DA0002000000000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000007 /* SettingsView.swift */; };
 		DA0002000000000000000008 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000008 /* AboutView.swift */; };
@@ -21,6 +20,7 @@
 		DA000200000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
 		DA000200000000000000000D /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = DA0009000000000000000002 /* Adhan */; };
 		DA000200000000000000000E /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000E /* CalendarManager.swift */; };
+		DA0002000000000000000005 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000005 /* NotificationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
