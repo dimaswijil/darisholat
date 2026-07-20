@@ -12,10 +12,16 @@ import SwiftUI
 struct DariSholatApp: App {
     @StateObject private var prayerViewModel = PrayerTimeViewModel()
 
+    init() {
+        // Force dark appearance app-wide so the MenuBarExtra panel
+        // looks identical in both system light and dark mode.
+        NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+    }
+
     var body: some Scene {
         MenuBarExtra {
             ContentView(viewModel: prayerViewModel)
-                .frame(width: (prayerViewModel.currentScreen == .settings || (prayerViewModel.currentScreen == .main && prayerViewModel.showCalendarEvents)) ? 500 : 260)
+                .frame(width: prayerViewModel.showCalendarEvents ? 500 : 260)
         } label: {
             MenuBarLabelView(viewModel: prayerViewModel)
         }
@@ -27,20 +33,14 @@ struct MenuBarLabelView: View {
     @ObservedObject var viewModel: PrayerTimeViewModel
 
     var body: some View {
-        switch viewModel.menuBarStyle {
-        case .iconOnly:
+        HStack(spacing: 4) {
             Image(systemName: viewModel.nextPrayerIconName)
-                .foregroundColor(viewModel.resolvedAccentColor)
-        case .compact:
-            HStack(spacing: 4) {
-                Image(systemName: viewModel.nextPrayerIconName)
-                if !viewModel.menuBarText.isEmpty {
-                    Text(viewModel.menuBarText)
-                        .font(.system(size: 12, weight: .medium, design: .monospaced))
-                        .monospacedDigit()
-                }
+            if !viewModel.menuBarText.isEmpty {
+                Text(viewModel.menuBarText)
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .monospacedDigit()
             }
-            .foregroundColor(viewModel.resolvedAccentColor)
         }
+        .foregroundColor(viewModel.resolvedAccentColor)
     }
 }

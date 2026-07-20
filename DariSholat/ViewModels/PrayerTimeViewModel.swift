@@ -13,12 +13,6 @@ import Adhan
 import ServiceManagement
 import EventKit
 
-// MARK: - Navigation State
-
-enum AppScreen {
-    case main, settings, about
-}
-
 // MARK: - App Blur Style
 
 enum AppBlurStyle: String, CaseIterable, Identifiable {
@@ -41,14 +35,6 @@ enum AppBlurStyle: String, CaseIterable, Identifiable {
         case .custom: return "Custom..."
         }
     }
-}
-
-// MARK: - Menu Bar Style
-
-enum MenuBarStyle: String, CaseIterable, Identifiable {
-    case iconOnly   = "iconOnly"
-    case compact    = "compact"
-    var id: String { rawValue }
 }
 
 // MARK: - Accent Color Preset
@@ -150,6 +136,15 @@ enum DariSholatMethod: String, CaseIterable, Identifiable {
     }
 }
 
+// MARK: - Indonesian City
+
+struct IndonesianCity: Identifiable, Hashable {
+    let id = UUID()
+    let name: String
+    let latitude: Double
+    let longitude: Double
+}
+
 // MARK: - Prayer Schedule Item
 
 struct PrayerScheduleItem: Identifiable {
@@ -165,7 +160,6 @@ class PrayerTimeViewModel: ObservableObject {
 
     // MARK: - Published UI State
     @Published var menuBarText: String = "DariSholat"
-    @Published var currentScreen: AppScreen = .main
     @Published var countdownText: String = "--:--:--"
     @Published var nextPrayerDisplayName: String = ""
     @Published var nextPrayerIconName: String = "moon.stars.fill"
@@ -177,17 +171,31 @@ class PrayerTimeViewModel: ObservableObject {
     @Published var currentHijriDate: String = ""
     @Published var cityName: String = "Mendeteksi..."
     @Published var isLocationAvailable: Bool = false
+    @Published var isManualLocation: Bool = false
+    @Published var selectedManualCityName: String = ""
+
+    let indonesianCities: [IndonesianCity] = [
+        IndonesianCity(name: "Jakarta", latitude: -6.2088, longitude: 106.8456),
+        IndonesianCity(name: "Surabaya", latitude: -7.2575, longitude: 112.7521),
+        IndonesianCity(name: "Bandung", latitude: -6.9175, longitude: 107.6191),
+        IndonesianCity(name: "Medan", latitude: 3.5952, longitude: 98.6722),
+        IndonesianCity(name: "Semarang", latitude: -6.9667, longitude: 110.4167),
+        IndonesianCity(name: "Makassar", latitude: -5.1477, longitude: 119.4327),
+        IndonesianCity(name: "Yogyakarta", latitude: -7.7956, longitude: 110.3695),
+        IndonesianCity(name: "Palembang", latitude: -2.9761, longitude: 104.7754),
+        IndonesianCity(name: "Denpasar", latitude: -8.6500, longitude: 115.2167),
+        IndonesianCity(name: "Balikpapan", latitude: -1.2654, longitude: 116.8312),
+        IndonesianCity(name: "Banjarmasin", latitude: -3.3167, longitude: 114.5900),
+        IndonesianCity(name: "Samarinda", latitude: -0.5022, longitude: 117.1536),
+        IndonesianCity(name: "Manado", latitude: 1.4822, longitude: 124.8481),
+        IndonesianCity(name: "Ambon", latitude: -3.6954, longitude: 128.1814),
+        IndonesianCity(name: "Jayapura", latitude: -2.5488, longitude: 140.7178),
+        IndonesianCity(name: "Banda Aceh", latitude: 5.5483, longitude: 95.3238),
+        IndonesianCity(name: "Padang", latitude: -0.9471, longitude: 100.3543),
+        IndonesianCity(name: "Pontianak", latitude: -0.0263, longitude: 109.3425)
+    ]
 
     // MARK: - Settings: Display
-    @Published var menuBarStyle: MenuBarStyle {
-        didSet {
-            UserDefaults.standard.set(menuBarStyle.rawValue, forKey: "menuBarStyle")
-            updateCountdown()
-        }
-    }
-    @Published var compactMainView: Bool {
-        didSet { UserDefaults.standard.set(compactMainView, forKey: "compactMainView") }
-    }
     @Published var uses24HourTime: Bool {
         didSet { UserDefaults.standard.set(uses24HourTime, forKey: "uses24HourTime") }
     }
@@ -256,6 +264,7 @@ class PrayerTimeViewModel: ObservableObject {
     private var locationManager = LocationManager()
     var notificationManager = NotificationManager()
     var calendarManager = CalendarManager()
+    let todoManager = TodoManager()
 
     // MARK: - Ramadan Countdown
     @Published var daysToRamadan: Int = 0
@@ -282,6 +291,7 @@ class PrayerTimeViewModel: ObservableObject {
     private var lastCalculationDay: Int = -1  // day-of-year when prayer times were last calculated
     private var lastLatitude: Double = -6.2088  // Jakarta default
     private var lastLongitude: Double = 106.8456
+    private var wakeObserver: NSObjectProtocol?
 
     // MARK: - Init
 
@@ -293,9 +303,6 @@ class PrayerTimeViewModel: ObservableObject {
         self.selectedMethod   = DariSholatMethod(rawValue: methodRaw) ?? .kemenag
         self.selectedLanguage = ud.string(forKey: "appLanguage") ?? "id"
 
-        let styleRaw = ud.string(forKey: "menuBarStyle") ?? "compact"
-        self.menuBarStyle     = MenuBarStyle(rawValue: styleRaw) ?? .compact
-        self.compactMainView  = ud.bool(forKey: "compactMainView")
         self.uses24HourTime   = ud.object(forKey: "uses24HourTime") as? Bool ?? true  // default 24h
         self.useAccentColor   = ud.object(forKey: "useAccentColor") as? Bool ?? true
         self.showSunnahPrayers = ud.bool(forKey: "showSunnahPrayers")
@@ -310,12 +317,55 @@ class PrayerTimeViewModel: ObservableObject {
         
         self.selectedEventWallpaper = ud.string(forKey: "selectedEventWallpaper") ?? "AboutWallpaper"
 
-        self.runAtLogin       = ud.bool(forKey: "runAtLogin")
+        self.runAtLogin       = ud.object(forKey: "runAtLogin") as? Bool ?? true
+
+        // Restore manual location settings
+        self.isManualLocation = ud.bool(forKey: "isManualLocation")
+        self.selectedManualCityName = ud.string(forKey: "selectedManualCityName") ?? ""
+        if self.isManualLocation {
+            self.lastLatitude = ud.double(forKey: "manualLatitude")
+            self.lastLongitude = ud.double(forKey: "manualLongitude")
+            self.cityName = self.selectedManualCityName
+            self.isLocationAvailable = true
+        } else {
+            self.lastLatitude = -6.2088  // Jakarta default
+            self.lastLongitude = 106.8456
+        }
 
         setupLocationListener()
         startCountdownTimer()
         updateRamadanCountdown()
         setupCalendarListener()
+        applyLoginItem()
+        setupWakeObserver()
+
+        if self.isManualLocation {
+            calculatePrayerTimes(latitude: lastLatitude, longitude: lastLongitude)
+        }
+    }
+
+    // MARK: - Wake From Sleep
+
+    /// The per-second timer freezes during sleep, so on wake the countdown and
+    /// (past midnight) the whole schedule are stale — recompute immediately.
+    /// Also opens the To-Doing window so the day starts with the board.
+    private func setupWakeObserver() {
+        wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.refreshPrayerTimes()
+            self.updateRamadanCountdown()
+            MainWindowManager.shared.show(tab: .todo, viewModel: self)
+        }
+    }
+
+    deinit {
+        if let wakeObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(wakeObserver)
+        }
     }
 
     // MARK: - Location Listener
@@ -329,6 +379,7 @@ class PrayerTimeViewModel: ObservableObject {
             })
             .sink { [weak self] location in
                 guard let self = self else { return }
+                if self.isManualLocation { return }
                 self.isLocationAvailable = true
                 self.lastLatitude  = location.coordinate.latitude
                 self.lastLongitude = location.coordinate.longitude
@@ -338,7 +389,11 @@ class PrayerTimeViewModel: ObservableObject {
 
         cityCancellable = locationManager.$cityName
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] name in self?.cityName = name }
+            .sink { [weak self] name in
+                guard let self = self else { return }
+                if self.isManualLocation { return }
+                self.cityName = name
+            }
     }
 
     // MARK: - Prayer Time Calculation (Adhan)
@@ -453,14 +508,9 @@ class PrayerTimeViewModel: ObservableObject {
                     : "\(m):\(String(format: "%02d", s))"
 
                 // Menu bar text based on style
-                switch menuBarStyle {
-                case .iconOnly:
-                    menuBarText = ""
-                case .compact:
-                    menuBarText = h > 0
-                        ? "\(prayerName) -\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
-                        : "\(prayerName) -\(m):\(String(format: "%02d", s))"
-                }
+                menuBarText = h > 0
+                    ? "\(prayerName) -\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
+                    : "\(prayerName) -\(m):\(String(format: "%02d", s))"
             } else {
                 menuBarText   = "\(prayerName) \(L10n.now(lang))"
                 countdownText = L10n.now(lang)
@@ -514,14 +564,9 @@ class PrayerTimeViewModel: ObservableObject {
         countdownText = h > 0
             ? "\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
             : "\(m):\(String(format: "%02d", s))"
-        switch menuBarStyle {
-        case .iconOnly:
-            menuBarText = ""
-        case .compact:
-            menuBarText = h > 0
-                ? "\(fName) -\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
-                : "\(fName) -\(m):\(String(format: "%02d", s))"
-        }
+        menuBarText = h > 0
+            ? "\(fName) -\(h):\(String(format: "%02d", m)):\(String(format: "%02d", s))"
+            : "\(fName) -\(m):\(String(format: "%02d", s))"
     }
 
     private func checkMidnightReset() {
@@ -747,5 +792,45 @@ class PrayerTimeViewModel: ObservableObject {
 
     func refreshCalendarEvents() {
         calendarManager.fetchEvents()
+    }
+
+    // MARK: - Manual Location Override
+
+    func selectCity(city: IndonesianCity) {
+        isManualLocation = true
+        selectedManualCityName = city.name
+        cityName = city.name
+        lastLatitude = city.latitude
+        lastLongitude = city.longitude
+        isLocationAvailable = true
+        
+        let ud = UserDefaults.standard
+        ud.set(true, forKey: "isManualLocation")
+        ud.set(city.name, forKey: "selectedManualCityName")
+        ud.set(city.latitude, forKey: "manualLatitude")
+        ud.set(city.longitude, forKey: "manualLongitude")
+        
+        calculatePrayerTimes(latitude: city.latitude, longitude: city.longitude)
+    }
+
+    func useAutomaticLocation() {
+        isManualLocation = false
+        selectedManualCityName = ""
+        
+        let ud = UserDefaults.standard
+        ud.set(false, forKey: "isManualLocation")
+        ud.removeObject(forKey: "selectedManualCityName")
+        
+        locationManager.requestLocation()
+        if let location = locationManager.currentLocation {
+            lastLatitude = location.coordinate.latitude
+            lastLongitude = location.coordinate.longitude
+            cityName = locationManager.cityName
+            isLocationAvailable = true
+            calculatePrayerTimes(latitude: lastLatitude, longitude: lastLongitude)
+        } else {
+            isLocationAvailable = false
+            cityName = L10n.detecting(selectedLanguage)
+        }
     }
 }

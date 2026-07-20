@@ -3,27 +3,33 @@
 //  DariSholat
 //
 //  About screen with app info, credits, developer profile, and GitHub link.
-//  Two-column layout matching the main view structure.
+//  Optimized using the Golden Ratio (φ = 1.618) and Fibonacci spacing tokens.
 //
 
 import SwiftUI
 
 struct AboutView: View {
     let language: String
-    var onBack: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            // ── Left Column: App Info ──────────────────────────────
-            leftColumn
-                .frame(width: 260)
+        GeometryReader { geometry in
+            let totalWidth = geometry.size.width
+            // Partition columns based on Golden Ratio
+            let rightWidth = max(210, totalWidth * 0.382)
+            let leftWidth = totalWidth - rightWidth
 
-            // Vertical separator
-            Divider()
+            HStack(alignment: .top, spacing: 0) {
+                // ── Left Column: App Info ──────────────────────────────
+                leftColumn
+                    .frame(width: leftWidth)
 
-            // ── Right Column: Developer & Links ───────────────────
-            rightColumn
-                .frame(width: 240)
+                // Vertical separator
+                Divider()
+
+                // ── Right Column: Developer & Links ───────────────────
+                rightColumn
+                    .frame(width: rightWidth)
+            }
         }
         .frame(minHeight: 460)
     }
@@ -34,41 +40,23 @@ struct AboutView: View {
         VStack(spacing: 0) {
             // Navigation header
             HStack {
-                Button(action: onBack) {
-                    HStack(spacing: 3) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: CGFloat.fontBody, weight: .semibold))
-                        Text(L10n.back(language))
-                            .font(.system(size: CGFloat.fontBody, weight: .regular))
-                    }
-                    .foregroundColor(.accentColor)
-                }
-                .buttonStyle(.plain)
-
                 Spacer()
 
                 Text(L10n.about(language))
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(.primary)
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
 
                 Spacer()
-
-                // Balance spacer
-                HStack(spacing: 3) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: CGFloat.fontBody, weight: .semibold))
-                    Text(L10n.back(language))
-                        .font(.system(size: CGFloat.fontBody))
-                }
-                .opacity(0)
             }
-            .padding(.horizontal, CGFloat.paddingH)
-            .padding(.vertical, CGFloat.headerV)
+            .frame(height: 21) // Fibonacci f21
+            .padding(.horizontal, 13) // Fibonacci f13
+            .padding(.top, 5)         // Fibonacci f5
+            .padding(.bottom, 5)      // Fibonacci f5
 
             Divider().opacity(0.35)
 
             ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 21) {
+                VStack(spacing: 13) { // Fibonacci f13
 
                     // App Name
                     VStack(spacing: 8) {
@@ -76,7 +64,7 @@ struct AboutView: View {
                             .font(.system(size: 15, weight: .bold, design: .rounded))
                             .tracking(-0.4)
                             .foregroundColor(.primary)
-                            .padding(.top, 65)
+                            .padding(.top, 21) // Fibonacci f21
 
                         Text("\(L10n.version(language)) 1.1.0")
                             .font(.system(size: CGFloat.fontSmall, weight: .medium))
@@ -102,20 +90,28 @@ struct AboutView: View {
                         RoundedRectangle(cornerRadius: 13)
                             .fill(Color.primary.opacity(0.04))
                     )
-                    .padding(.horizontal, CGFloat.paddingH)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 13)
+                            .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 13)
 
                     // Credits
-                    VStack(spacing: 8) {
-                        Text("Powered by Adhan (Batoul Apps)")
-                            .font(.system(size: CGFloat.fontSmall, weight: .regular))
-                            .foregroundColor(.secondary)
+                    aboutCard {
+                        VStack(spacing: 8) {
+                            Text("Powered by Adhan (Batoul Apps)")
+                                .font(.system(size: CGFloat.fontSmall, weight: .regular))
+                                .foregroundColor(.secondary)
 
-                        Link("github.com/batoulapps/adhan-swift", destination: URL(string: "https://github.com/batoulapps/adhan-swift")!)
-                            .font(.system(size: CGFloat.fontSmall))
-                            .foregroundColor(.accentColor)
+                            Link("github.com/batoulapps/adhan-swift", destination: URL(string: "https://github.com/batoulapps/adhan-swift")!)
+                                .font(.system(size: CGFloat.fontSmall, weight: .medium))
+                                .foregroundColor(.accentColor)
+                        }
+                        .padding(.vertical, 13)
+                        .frame(maxWidth: .infinity)
                     }
-                    .padding(.top, 8)
                 }
+                .padding(.top, 8)
                 .padding(.bottom, 21)
             }
         }
@@ -137,88 +133,114 @@ struct AboutView: View {
 
     private var rightColumn: some View {
         VStack(spacing: 0) {
-            // Section header
-            HStack {
-                HStack(spacing: 3) {
-                    Image(systemName: "person.fill")
-                        .font(.system(size: CGFloat.fontSmall - 1, weight: .medium))
-                        .foregroundColor(.accentColor)
-                    Text("Developer")
-                        .font(.system(size: CGFloat.fontSmall, weight: .semibold))
-                        .foregroundColor(.secondary)
-                }
-                Spacer()
-            }
-            .padding(.horizontal, CGFloat.paddingH)
-            .padding(.top, CGFloat.rowV)
-            .padding(.bottom, 3)
-
-            // Developer profile card
-            VStack(spacing: 10) {
-                // Avatar placeholder with initials
-                ZStack {
-                    Circle()
-                        .fill(Color.accentColor.opacity(0.15))
-                        .frame(width: 48, height: 48)
-                    Text("DW")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(.accentColor)
-                }
-                .padding(.top, 13)
-
-                VStack(spacing: 3) {
-                    Text("Dimas Wijil")
-                        .font(.system(size: CGFloat.fontBody, weight: .semibold))
-                        .foregroundColor(.primary)
-
-                    Text("@dimaswijil")
-                        .font(.system(size: CGFloat.fontSmall, weight: .regular))
-                        .foregroundColor(.secondary)
-                }
-            }
-            .padding(.bottom, 13)
+            // Matching top alignment space
+            Color.clear
+                .frame(height: 21)
+                .padding(.top, 5)
+                .padding(.bottom, 5)
 
             Divider().opacity(0.35)
-                .padding(.horizontal, CGFloat.paddingH)
+                .padding(.horizontal, 13)
 
-            // Links section
-            VStack(spacing: 0) {
-                // GitHub Repository
-                linkRow(
-                    icon: "link",
-                    title: "GitHub Repository",
-                    subtitle: "dimaswijil/DariSholat",
-                    url: "https://github.com/dimaswijil/DariSholat"
-                )
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 8) {
 
-                // GitHub Profile
-                linkRow(
-                    icon: "person.circle",
-                    title: "GitHub Profile",
-                    subtitle: "github.com/dimaswijil",
-                    url: "https://github.com/dimaswijil"
-                )
+                    // Developer Section Header
+                    sectionHeader("Developer", icon: "person.fill")
 
-                Divider().opacity(0.35)
-                    .padding(.horizontal, CGFloat.paddingH)
+                    // Developer profile card
+                    aboutCard {
+                        VStack(spacing: 10) {
+                            // Avatar placeholder with initials
+                            ZStack {
+                                Circle()
+                                    .fill(Color.accentColor.opacity(0.15))
+                                    .frame(width: 48, height: 48)
+                                Text("DW")
+                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                    .foregroundColor(.accentColor)
+                            }
+                            .padding(.top, 13)
 
-                // Share button
-                shareRow
+                            VStack(spacing: 3) {
+                                Text("Dimas Wijil")
+                                    .font(.system(size: CGFloat.fontBody, weight: .semibold))
+                                    .foregroundColor(.primary)
+
+                                Text("@dimaswijil")
+                                    .font(.system(size: CGFloat.fontSmall, weight: .regular))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.bottom, 13)
+                        .frame(maxWidth: .infinity)
+                    }
+
+                    // Links Section Header
+                    sectionHeader("Links", icon: "link")
+
+                    // Links Card
+                    aboutCard {
+                        linkRow(
+                            icon: "link",
+                            title: "GitHub Repository",
+                            subtitle: "dimaswijil/DariSholat",
+                            url: "https://github.com/dimaswijil/DariSholat"
+                        )
+                    }
+
+                    Spacer(minLength: 21)
+
+                    // Footer
+                    VStack(spacing: 4) {
+                        Text("Made with ☪︎ in Indonesia")
+                            .font(.system(size: CGFloat.fontSmall - 1, weight: .regular))
+                            .foregroundColor(.secondary.opacity(0.6))
+                        Text("© 2026 Dimas Wijil")
+                            .font(.system(size: CGFloat.fontSmall - 1, weight: .regular))
+                            .foregroundColor(.secondary.opacity(0.6))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 13)
+                }
+                .padding(.top, 8)
             }
-
-            Spacer(minLength: 0)
-
-            // Footer
-            VStack(spacing: 4) {
-                Text("Made with ☪︎ in Indonesia")
-                    .font(.system(size: CGFloat.fontSmall - 1, weight: .regular))
-                    .foregroundColor(.secondary.opacity(0.6))
-                Text("© 2026 Dimas Wijil")
-                    .font(.system(size: CGFloat.fontSmall - 1, weight: .regular))
-                    .foregroundColor(.secondary.opacity(0.6))
-            }
-            .padding(.bottom, 13)
         }
+    }
+
+    // MARK: - Section Header
+
+    @ViewBuilder
+    private func sectionHeader(_ title: String, icon: String) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: icon)
+                .font(.system(size: CGFloat.fontSmall - 1, weight: .medium))
+                .foregroundColor(.accentColor)
+            Text(title)
+                .font(.system(size: CGFloat.fontSmall, weight: .semibold))
+                .foregroundColor(.secondary)
+        }
+        .padding(.horizontal, 13)
+        .padding(.top, 13)
+        .padding(.bottom, 5)
+    }
+
+    // MARK: - Card Container
+
+    @ViewBuilder
+    private func aboutCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(spacing: 0) {
+            content()
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.primary.opacity(0.04))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
+        )
+        .padding(.horizontal, 13)
     }
 
     // MARK: - Link Row
@@ -254,66 +276,11 @@ struct AboutView: View {
                         .font(.system(size: 10, weight: .medium))
                         .foregroundColor(.secondary.opacity(0.5))
                 }
-                .padding(.horizontal, CGFloat.paddingH)
-                .padding(.vertical, CGFloat.rowV)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
                 .contentShape(Rectangle())
             }
             .buttonStyle(HoverMenuButtonStyle())
-        }
-    }
-
-    // MARK: - Share Row
-
-    private var shareRow: some View {
-        Button(action: shareApp) {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(Color.accentColor.opacity(0.12))
-                        .frame(width: 28, height: 28)
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.accentColor)
-                }
-
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(shareLabel)
-                        .font(.system(size: CGFloat.fontBody, weight: .regular))
-                        .foregroundColor(.primary)
-                    Text("github.com/dimaswijil/DariSholat")
-                        .font(.system(size: CGFloat.fontSmall - 1, weight: .regular))
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                }
-
-                Spacer()
-            }
-            .padding(.horizontal, CGFloat.paddingH)
-            .padding(.vertical, CGFloat.rowV)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(HoverMenuButtonStyle())
-    }
-
-    private var shareLabel: String {
-        switch language {
-        case "ar": return "مشاركة التطبيق"
-        case "id": return "Bagikan Aplikasi"
-        default:   return "Share App"
-        }
-    }
-
-    private func shareApp() {
-        let shareText = "DariSholat — Prayer Times for macOS 🕌\nhttps://github.com/dimaswijil/DariSholat"
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(shareText, forType: .string)
-
-        // Also show native share picker if available
-        let picker = NSSharingServicePicker(items: [shareText])
-        if let window = NSApp.keyWindow, let contentView = window.contentView {
-            picker.show(relativeTo: contentView.bounds, of: contentView, preferredEdge: .minY)
         }
     }
 }

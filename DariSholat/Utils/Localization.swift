@@ -707,4 +707,90 @@ struct L10n {
         default:   return "\(prayerName) time has arrived"
         }
     }
+
+    // MARK: - To-Do
+
+    static func automaticLocation(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "الموقع التلقائي (GPS)"
+        case "id": return "Lokasi Otomatis (GPS)"
+        case "tr": return "Otomatik Konum (GPS)"
+        case "ja": return "自動位置情報 (GPS)"
+        case "kk": return "Автоматты орын (GPS)"
+        case "fa": return "موقعیت خودکار (GPS)"
+        case "ur": return "خودکار مقام (GPS)"
+        case "ms": return "Lokasi Automatik (GPS)"
+        default:   return "Automatic Location (GPS)"
+        }
+    }
+
+    static func todo(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "المهام"
+        case "id": return "To-Doing"
+        case "tr": return "Yapılacaklar"
+        case "ja": return "タスク"
+        case "kk": return "Тапсырмалар"
+        case "fa": return "کارها"
+        case "ur": return "کام"
+        case "ms": return "Tugasan"
+        default:   return "To-Doing"
+        }
+    }
+
+    static func addTask(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "أضف مهمة…"
+        case "id": return "sedikit demi sedikit, satu gigitan dulu…"
+        case "tr": return "Görev ekle…"
+        case "ja": return "タスクを追加…"
+        case "kk": return "Тапсырма қосу…"
+        case "fa": return "افزودن کار…"
+        case "ur": return "کام شامل کریں…"
+        case "ms": return "Tambah tugasan…"
+        default:   return "doing a bite at a time, piece by piece…"
+        }
+    }
+
+    static func noTasks(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "لا توجد مهام"
+        case "id": return "Tidak ada tugas"
+        case "tr": return "Görev yok"
+        case "ja": return "タスクなし"
+        case "kk": return "Тапсырма жоқ"
+        case "fa": return "کاری نیست"
+        case "ur": return "کوئی کام نہیں"
+        case "ms": return "Tiada tugasan"
+        default:   return "No tasks"
+        }
+    }
+
+    static func tasksPending(_ lang: String, count: Int) -> String {
+        switch lang {
+        case "ar": return "\(count) مهام متبقية"
+        case "id": return "\(count) belum selesai"
+        case "tr": return "\(count) bekleyen görev"
+        case "ja": return "残りタスク: \(count)"
+        case "kk": return "\(count) орындалмаған"
+        case "fa": return "\(count) کار باقی‌مانده"
+        case "ur": return "\(count) کام باقی"
+        case "ms": return "\(count) belum selesai"
+        default:   return "\(count) pending"
+        }
+    }
+
+    static func clearCompleted(_ lang: String) -> String {
+        switch lang {
+        case "ar": return "مسح المكتملة"
+        case "id": return "Hapus yang selesai"
+        case "tr": return "Tamamlananları temizle"
+        case "ja": return "完了済みを削除"
+        case "kk": return "Аяқталғандарды өшіру"
+        case "fa": return "پاک‌کردن انجام‌شده‌ها"
+        case "ur": return "مکمل شدہ صاف کریں"
+        case "ms": return "Padam yang selesai"
+        default:   return "Clear completed"
+        }
+    }
 }

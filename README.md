@@ -3,14 +3,14 @@
 > Aplikasi menu bar macOS yang ringan dan elegan untuk memantau waktu sholat harian langsung dari desktop kamu.
 
 <p align="center">
-  <img src="assets/screenshots/main_view.png" width="450" alt="DariSholat Preview">
+  <img src="assets/screenshots/todoing_view.png" width="450" alt="DariSholat Preview">
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
-  <img src="https://img.shields.io/badge/Versi-1.1.2-blue?style=flat-square" alt="v1.1.2">
+  <img src="https://img.shields.io/badge/Versi-1.2.0-blue?style=flat-square" alt="v1.2.0">
   <img src="https://img.shields.io/badge/Status-Active%20Development-brightgreen?style=flat-square" alt="Active Development">
 </p>
 
@@ -40,10 +40,16 @@
 | 🕒 **Jadwal Lengkap** | Menampilkan semua waktu sholat: Subuh, Syuruq, Dzuhur, Ashar, Maghrib, dan Isya |
 | ⚙️ **Metode Kemenag RI & Global** | Menggunakan metode perhitungan dari Kementerian Agama Republik Indonesia maupun standar global lainnya |
 | 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba agar tidak terlewat saat sedang bekerja |
+| ✅ **To-Doing (Kanban Board)** | Kelola tugas harian dengan papan kanban (Todo → In Progress → Done), lengkap dengan kategori project, kalender Hijriah, dan countdown sholat berikutnya |
 
 ---
 
 ## Tampilan Aplikasi
+
+<p align="center">
+  <img src="assets/screenshots/todoing_view.png" width="700" alt="To-Doing Kanban Board">
+</p>
+<p align="center"><em>To-Doing — Papan kanban untuk mengelola tugas harian dengan kalender Hijriah dan countdown sholat</em></p>
 
 <p align="center">
   <img src="assets/screenshots/main_view.png" width="700" alt="Menu utama DariSholat">
@@ -64,7 +70,7 @@
 
 ## ⚙️ Pengaturan yang Tersedia
 
-- **Display:** Menu Bar Style (Icon Only / Compact), tampilan UI yang ringkas (Compact Main View), dan format waktu 24 jam.
+- **Display:** Menu Bar Style (Icon Only / Compact) dan format waktu 24 jam.
 - **System:** Opsi jalankan saat login (Run at Login) dan Notifikasi waktu sholat.
 - **Theme:** Penyesuaian warna aksen aplikasi (Accent Color) dengan palet atau warna kustom.
 - **Calculation:** Berbagai pilihan metode perhitungan waktu sholat (Kemenag RI, MWL, ISNA, dll).
@@ -139,9 +145,14 @@ Tekan `⌘R` atau klik tombol **Run** di Xcode. Setelah berhasil, ikon DariShola
 DariSholat/
 ├── DariSholat/
 │   ├── App/                  # Entry point aplikasi (DariSholatApp.swift)
-│   ├── Views/                # Komponen tampilan SwiftUI (ContentView, SettingsView, AboutView, VisualEffectView)
+│   ├── Views/                # Komponen tampilan SwiftUI
+│   │   ├── MainWindow/       # To-Doing kanban board (MainWindowView, TodoListView, CommandPaletteView)
+│   │   ├── ContentView.swift
+│   │   ├── SettingsView.swift
+│   │   ├── AboutView.swift
+│   │   └── VisualEffectView.swift
 │   ├── ViewModels/           # ViewModel (PrayerTimeViewModel)
-│   ├── Managers/             # Manager (LocationManager, NotificationManager, CalendarManager)
+│   ├── Managers/             # Manager (LocationManager, NotificationManager, CalendarManager, TodoManager, MainWindowManager)
 │   ├── Utils/                # Utility (Localization)
 │   └── Resources/            # Assets.xcassets, Info.plist, Entitlements
 ├── DariSholatUITests/        # UI Tests

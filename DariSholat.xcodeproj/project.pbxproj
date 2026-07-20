@@ -9,18 +9,22 @@
 /* Begin PBXBuildFile section */
 		04A802DE2FAACA43009198C7 /* DariSholatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */; };
 		04DE706B2FF551DA0021880B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
+		457B38BBC0129CA1DD569439 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000008 /* AboutView.swift */; };
+		5B674C2D37FC1121208D5CB5 /* MainWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91F37778325C6F3F94A12AC /* MainWindowManager.swift */; };
+		98AF4B5409339688416B68EB /* TodoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F56605949DCE24FF06EE689 /* TodoManager.swift */; };
+		ABFCAC0BF753E2266C7E0924 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000002 /* ContentView.swift */; };
+		D3E4B7296CAE9DA77BD1C36D /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B094575D3E32DE3DB8DA3E7 /* TodoListView.swift */; };
 		DA0002000000000000000001 /* DariSholatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000001 /* DariSholatApp.swift */; };
-		DA0002000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000002 /* ContentView.swift */; };
 		DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000003 /* PrayerTimeViewModel.swift */; };
 		DA0002000000000000000004 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000004 /* LocationManager.swift */; };
+		DA0002000000000000000005 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000005 /* NotificationManager.swift */; };
 		DA0002000000000000000006 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000006 /* VisualEffectView.swift */; };
 		DA0002000000000000000007 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000007 /* SettingsView.swift */; };
-		DA0002000000000000000008 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000008 /* AboutView.swift */; };
 		DA0002000000000000000009 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000009 /* Localization.swift */; };
 		DA000200000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
 		DA000200000000000000000D /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = DA0009000000000000000002 /* Adhan */; };
 		DA000200000000000000000E /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000E /* CalendarManager.swift */; };
-		DA0002000000000000000005 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000005 /* NotificationManager.swift */; };
+		E100DB34F095CF00977F54D7 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD5DF6C01EA59C5D44A50A9 /* MainWindowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +41,10 @@
 		04A802DB2FAACA43009198C7 /* DariSholatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DariSholatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A802DD2FAACA43009198C7 /* DariSholatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatUITests.swift; sourceTree = "<group>"; };
 		04A802DF2FAACA43009198C7 /* DariSholatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2F56605949DCE24FF06EE689 /* TodoManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodoManager.swift; sourceTree = "<group>"; };
+		7B094575D3E32DE3DB8DA3E7 /* TodoListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
+		9CD5DF6C01EA59C5D44A50A9 /* MainWindowView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowView.swift; sourceTree = "<group>"; };
+		B91F37778325C6F3F94A12AC /* MainWindowManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainWindowManager.swift; sourceTree = "<group>"; };
 		DA0001000000000000000001 /* DariSholatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DariSholatApp.swift; sourceTree = "<group>"; };
 		DA0001000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DA0001000000000000000003 /* PrayerTimeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeViewModel.swift; sourceTree = "<group>"; };
@@ -89,6 +97,15 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		41B483DF39EFA38AC5CBAB4C /* MainWindow */ = {
+			isa = PBXGroup;
+			children = (
+				9CD5DF6C01EA59C5D44A50A9 /* MainWindowView.swift */,
+				7B094575D3E32DE3DB8DA3E7 /* TodoListView.swift */,
+			);
+			path = MainWindow;
+			sourceTree = "<group>";
+		};
 		566A39F01F959571D7744EBA /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +120,8 @@
 				DA0001000000000000000004 /* LocationManager.swift */,
 				DA0001000000000000000005 /* NotificationManager.swift */,
 				DA000100000000000000000E /* CalendarManager.swift */,
+				2F56605949DCE24FF06EE689 /* TodoManager.swift */,
+				B91F37778325C6F3F94A12AC /* MainWindowManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -124,6 +143,7 @@
 				DA0001000000000000000008 /* AboutView.swift */,
 				DA0001000000000000000007 /* SettingsView.swift */,
 				DA0001000000000000000006 /* VisualEffectView.swift */,
+				41B483DF39EFA38AC5CBAB4C /* MainWindow */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -292,15 +312,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA0002000000000000000001 /* DariSholatApp.swift in Sources */,
-				DA0002000000000000000002 /* ContentView.swift in Sources */,
 				DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */,
 				DA0002000000000000000004 /* LocationManager.swift in Sources */,
 				DA0002000000000000000005 /* NotificationManager.swift in Sources */,
 				DA0002000000000000000006 /* VisualEffectView.swift in Sources */,
 				DA0002000000000000000007 /* SettingsView.swift in Sources */,
-				DA0002000000000000000008 /* AboutView.swift in Sources */,
 				DA0002000000000000000009 /* Localization.swift in Sources */,
 				DA000200000000000000000E /* CalendarManager.swift in Sources */,
+				98AF4B5409339688416B68EB /* TodoManager.swift in Sources */,
+				5B674C2D37FC1121208D5CB5 /* MainWindowManager.swift in Sources */,
+				E100DB34F095CF00977F54D7 /* MainWindowView.swift in Sources */,
+				D3E4B7296CAE9DA77BD1C36D /* TodoListView.swift in Sources */,
+				ABFCAC0BF753E2266C7E0924 /* ContentView.swift in Sources */,
+				457B38BBC0129CA1DD569439 /* AboutView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -50,10 +50,10 @@ struct ContentView: View {
     @ObservedObject var viewModel: PrayerTimeViewModel
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var hasAppeared = false
-    @State private var urgencyPulse = false
+
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             VisualEffectView(material: viewModel.blurStyle.material, blendingMode: .behindWindow)
                 .opacity(viewModel.blurStyle == .custom ? viewModel.customBlurOpacity : 1.0)
                 .ignoresSafeArea()
@@ -65,35 +65,11 @@ struct ContentView: View {
             }
 
             HStack(alignment: .top, spacing: 0) {
-                // Left Column (Prayer times, Settings, or About)
-                Group {
-                    switch viewModel.currentScreen {
-                    case .main:
-                        leftMainColumn
-                            .transition(.opacity)
-                    case .settings:
-                        SettingsView(viewModel: viewModel) {
-                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
-                        }
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal:   .move(edge: .trailing).combined(with: .opacity)
-                        ))
-                    case .about:
-                        AboutView(language: viewModel.selectedLanguage) {
-                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .main }
-                        }
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal:   .move(edge: .trailing).combined(with: .opacity)
-                        ))
-                    }
-                }
-                .frame(width: (viewModel.currentScreen == .settings || viewModel.currentScreen == .about)
-                       ? (DS.panelWidth + 240) : DS.panelWidth)
-                .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: viewModel.currentScreen)
+                // Left Column (Prayer times; Settings/About live in the desktop window)
+                leftMainColumn
+                    .frame(width: DS.panelWidth)
 
-                if viewModel.currentScreen == .main && viewModel.showCalendarEvents {
+                if viewModel.showCalendarEvents {
                     // Vertical separator
                     Divider()
 
@@ -131,18 +107,10 @@ struct ContentView: View {
 
 
         }
-        .frame(width: {
-            switch viewModel.currentScreen {
-            case .settings:
-                return DS.panelWidth + 240
-            case .about:
-                return DS.panelWidth + 240
-            case .main:
-                return viewModel.showCalendarEvents ? (DS.panelWidth + 240) : DS.panelWidth
-            }
-        }())
+        .frame(width: viewModel.showCalendarEvents ? (DS.panelWidth + 240) : DS.panelWidth)
         .environment(\.layoutDirection,
                       viewModel.selectedLanguage == "ar" ? .rightToLeft : .leftToRight)
+        .preferredColorScheme(.dark)
         .tint(viewModel.resolvedAccentColor)
         .accentColor(viewModel.resolvedAccentColor)
         .onAppear {
@@ -178,14 +146,33 @@ struct ContentView: View {
                     .foregroundColor(.primary)
                     .tracking(-0.4)
 
-                HStack(spacing: 3) {
-                    Image(systemName: "location.fill")
-                        .font(.system(size: 9))
-                        .foregroundColor(.secondary)
-                    Text(viewModel.cityName)
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
+                Menu {
+                    Button(action: {
+                        viewModel.useAutomaticLocation()
+                    }) {
+                        Text(!viewModel.isManualLocation ? "✓ \(L10n.automaticLocation(viewModel.selectedLanguage))" : L10n.automaticLocation(viewModel.selectedLanguage))
+                    }
+
+                    Divider()
+
+                    ForEach(viewModel.indonesianCities) { city in
+                        Button(action: {
+                            viewModel.selectCity(city: city)
+                        }) {
+                            Text(viewModel.isManualLocation && viewModel.selectedManualCityName == city.name ? "✓ \(city.name)" : city.name)
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 3) {
+                        Image(systemName: "location.fill")
+                            .font(.system(size: 9))
+                        Text(viewModel.cityName)
+                            .font(.system(size: 11))
+                    }
+                    .foregroundColor(.secondary)
                 }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
             }
 
             Spacer(minLength: DS.f8)
@@ -200,20 +187,12 @@ struct ContentView: View {
                         font: .system(size: DS.fontSmall, weight: .medium, design: .monospaced),
                         color: urgencyColor
                     )
-                    .scaleEffect(isUrgent ? (urgencyPulse ? 1.08 : 1.0) : 1.0)
-                    .animation(
-                        reduceMotion ? nil : (isUrgent
-                            ? .easeInOut(duration: 1.0).repeatForever(autoreverses: true)
-                            : .default),
-                        value: urgencyPulse
-                    )
                 }
             }
         }
         .padding(.horizontal, DS.paddingH)
         .padding(.vertical, DS.headerV)
-        .onAppear { if isUrgent { urgencyPulse = true } }
-        .onChange(of: isUrgent) { newValue in urgencyPulse = newValue }
+
     }
 
     /// True when < 5 minutes remain
@@ -263,20 +242,57 @@ struct ContentView: View {
 
     private var bottomMenu: some View {
         VStack(spacing: 0) {
-            menuBtn(L10n.settings(viewModel.selectedLanguage), color: .primary) {
-                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
-                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .settings }
+            // Single compact row: icon-only actions (To-Doing + GitHub)
+            HStack(spacing: 13) {
+                iconAction(icon: "checklist",
+                           help: L10n.todo(viewModel.selectedLanguage)) {
+                    MainWindowManager.shared.show(tab: .todo, viewModel: viewModel)
+                }
+                .overlay(alignment: .topTrailing) {
+                    PendingBadge(todoManager: viewModel.todoManager)
+                        .offset(x: 8, y: -4)
+                }
+
+                if let url = URL(string: "https://github.com/dimaswijil/DariSholat") {
+                    Link(destination: url) {
+                        iconCircle("link")
+                    }
+                    .buttonStyle(.plain)
+                    .help("GitHub — dimaswijil/DariSholat")
+                }
+
+                Spacer()
             }
-            menuBtn(L10n.about(viewModel.selectedLanguage), color: .primary) {
-                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
-                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { viewModel.currentScreen = .about }
-            }
+            .padding(.horizontal, DS.paddingH)
+            .padding(.vertical, DS.rowV)
+
             hairline
             menuBtn(L10n.quit(viewModel.selectedLanguage), color: .red) {
                 NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
                 NSApplication.shared.terminate(nil)
             }
         }
+    }
+
+    /// Icon-only circular action button for the compact bottom row.
+    private func iconAction(icon: String, help: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            iconCircle(icon)
+        }
+        .buttonStyle(.plain)
+        .help(help)
+    }
+
+    private func iconCircle(_ icon: String) -> some View {
+        ZStack {
+            Circle()
+                .fill(Color.accentColor.opacity(0.12))
+                .frame(width: 28, height: 28)
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.accentColor)
+        }
+        .contentShape(Circle())
     }
 
     @ViewBuilder
@@ -402,11 +418,6 @@ struct ContentView: View {
         .padding(.vertical, 12)
     }
 
-    // Keep old name for backward compatibility if referenced elsewhere
-    private var wallpaperSelector: some View {
-        wallpaperAndToggleBar
-    }
-
     // MARK: - Ramadan Countdown Row
 
     private var ramadanCountdownRow: some View {
@@ -480,27 +491,14 @@ struct PrayerTimeRow: View {
     var progress: Double? = nil  // 0.0–1.0 for next prayer progress ring
     @Environment(\.accessibilityReduceMotion) var reduceMotion
     @State private var isHovered = false
-    @State private var isPulsing = false
+
 
     private var accent: Color { .accentColor }
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            // Circular Icon with optional pulsing glow + progress ring
+            // Circular Icon with progress ring
             ZStack {
-                // Pulsing glow behind next prayer icon
-                if isNext {
-                    Circle()
-                        .fill(accent.opacity(0.25))
-                        .frame(width: 34, height: 34)
-                        .scaleEffect(isPulsing ? 1.15 : 0.95)
-                        .opacity(isPulsing ? 0.0 : 0.5)
-                        .animation(
-                            reduceMotion ? nil : .easeInOut(duration: 2.0).repeatForever(autoreverses: true),
-                            value: isPulsing
-                        )
-                }
-
                 // Progress ring
                 if let progress = progress, isNext {
                     Circle()
@@ -513,11 +511,6 @@ struct PrayerTimeRow: View {
                 Circle()
                     .fill(isNext ? accent : Color.primary.opacity(0.08))
                     .frame(width: 28, height: 28)
-                    .scaleEffect(isNext && isPulsing ? 1.06 : 1.0)
-                    .animation(
-                        reduceMotion ? nil : (isNext ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : .default),
-                        value: isPulsing
-                    )
 
                 Image(systemName: prayerIconName(prayer))
                     .font(.system(size: 13, weight: .semibold))
@@ -542,12 +535,7 @@ struct PrayerTimeRow: View {
         .scaleEffect(isHovered ? 1.01 : 1.0)
         .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: isHovered)
         .onHover { h in withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.1)) { isHovered = h } }
-        .onAppear {
-            if isNext { isPulsing = true }
-        }
-        .onChange(of: isNext) { newValue in
-            isPulsing = newValue
-        }
+
     }
 
     private func prayerIconName(_ prayer: Prayer) -> String {
