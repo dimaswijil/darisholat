@@ -32,7 +32,7 @@ struct SettingsView: View {
                 }
                 .frame(height: 21) // Fibonacci f21
                 .padding(.horizontal, 13) // Fibonacci f13
-                .padding(.top, 5)         // Fibonacci f5
+                .padding(.top, 24)        // clears macOS traffic lights & aligns with sidebar
                 .padding(.bottom, 5)      // Fibonacci f5
 
                 Divider().opacity(0.35) // Match main view divider opacity
@@ -87,7 +87,7 @@ struct SettingsView: View {
                                     }
                                     .pickerStyle(.menu)
                                     .labelsHidden()
-                                    .frame(width: 100)
+                                    .frame(width: 130) // wider for Қазақша, فارسی etc.
                                 }
                             }
 
@@ -144,7 +144,7 @@ struct SettingsView: View {
                                     }
                                     .pickerStyle(.menu)
                                     .labelsHidden()
-                                    .frame(width: 100)
+                                    .frame(width: 140) // wider for "Kemenag (Indonesia)"
                                 }
 
                                 cardDivider

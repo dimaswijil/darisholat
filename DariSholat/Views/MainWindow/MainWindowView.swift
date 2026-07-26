@@ -43,32 +43,16 @@ struct MainWindowView: View {
 
                 detail
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    // When the sidebar is hidden the toggle button occupies the
-                    // top-left; drop the content below it so the title clears
-                    // the titlebar line symmetrically.
-                    .padding(.top, windowManager.sidebarVisible ? 0 : 34)
             }
             .animation(.interpolatingSpring(stiffness: 300, damping: 30), value: windowManager.sidebarVisible)
 
-            // Fixed toggle above the "DariSholat" brand — lives in the ZStack
-            // (not the animated HStack) so it never shifts when the sidebar
-            // slides away.
+            // Toggle is completely static (Apple's pattern: the control never
+            // moves; the sidebar slides beneath it). No motion = no jank.
             VStack {
                 HStack {
-                    Button(action: windowManager.toggleSidebar) {
-                        Image(systemName: "sidebar.left")
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
-                            .frame(width: 28, height: 24)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .help(viewModel.selectedLanguage == "id"
-                          ? "Sembunyikan/tampilkan sidebar (⌘\\)"
-                          : "Hide/show sidebar (⌘\\)")
-                    .padding(.leading, 21) // same left edge as "DariSholat"
-                    .padding(.top, 10)
-
+                    toggleButton
+                        .padding(.leading, 21)
+                        .padding(.top, 24)
                     Spacer()
                 }
                 Spacer()
@@ -87,21 +71,41 @@ struct MainWindowView: View {
                       viewModel.selectedLanguage == "ar" ? .rightToLeft : .leftToRight)
     }
 
+    // MARK: - Sidebar Toggle
+
+    private var toggleButton: some View {
+        Button(action: windowManager.toggleSidebar) {
+            Image(systemName: "sidebar.left")
+                .font(.system(size: 14))
+                .foregroundColor(.secondary)
+                // Leading-aligned so the glyph's left edge sits exactly on
+                // the 21pt grid shared by "DariSholat" and page titles.
+                .frame(width: 28, height: 24, alignment: .leading)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(viewModel.selectedLanguage == "id"
+              ? "Sembunyikan/tampilkan sidebar (⌘\\)"
+              : "Hide/show sidebar (⌘\\)")
+    }
+
     // MARK: - Sidebar
     // Spacing follows the app's Fibonacci tokens (5, 8, 13, 21, 34, 55)
     // and the golden ratio φ for vertical rhythm.
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Brand block — accent-tinted, tappable: opens the Home page
-            // (a calm wallpaper view matching the popover's selection).
+            // Brand block — accent-tinted, tappable: opens the Home page.
+            // Brand sits beside the (static, ZStack-level) toggle icon;
+            // location goes right below the icon on the same left edge.
             Button {
                 windowManager.selectedTab = .home
             } label: {
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text("DariSholat")
                         .font(.system(size: 21, weight: .bold, design: .serif))
                         .foregroundColor(.accentColor)
+                        .padding(.leading, 34) // clears the toggle icon
 
                     HStack(spacing: 3) {
                         Image(systemName: "location.fill")
@@ -116,7 +120,7 @@ struct MainWindowView: View {
             .buttonStyle(.plain)
             .help(viewModel.selectedLanguage == "id" ? "Beranda" : "Home")
             .padding(.horizontal, 21)
-            .padding(.top, 42)      // below the fixed toggle button line
+            .padding(.top, 24)      // clears macOS traffic lights & aligns with toggle button
             .padding(.bottom, 13)   // tight gap to the nav below
 
             // Navigation
@@ -157,12 +161,14 @@ struct MainWindowView: View {
                     Text(viewModel.nextPrayerDisplayName)
                         .font(.system(size: 14, weight: .semibold, design: .serif))
                         .foregroundColor(.primary)
-                }
 
-                Text(viewModel.countdownText)
-                    .font(.system(size: 12, weight: .medium, design: .monospaced))
-                    .foregroundColor(.accentColor)
-                    .monospacedDigit()
+                    Spacer(minLength: 8)
+
+                    Text(viewModel.countdownText)
+                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                        .foregroundColor(.accentColor)
+                        .monospacedDigit()
+                }
             }
             .padding(13)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -257,6 +263,13 @@ private struct HomeWallpaperView: View {
                     .id(viewModel.selectedEventWallpaper)
                     .animation(.easeInOut(duration: 0.4), value: viewModel.selectedEventWallpaper)
 
+                // Full events list — the popover only fits a few; this is
+                // the complete view, floating on a frosted card.
+                eventsCard
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .padding(.top, 21)
+                    .padding(.trailing, 21)
+
                 // Soft bottom scrim so the thumbnails read on any image
                 LinearGradient(
                     colors: [.clear, .black.opacity(0.45)],
@@ -293,5 +306,79 @@ private struct HomeWallpaperView: View {
             }
         }
         .ignoresSafeArea()
+    }
+
+    // MARK: - Full Events Card
+
+    private var eventsCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header: Events + hijri date
+            HStack {
+                HStack(spacing: 5) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.accentColor)
+                    Text(L10n.events(viewModel.selectedLanguage))
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.white.opacity(0.9))
+                }
+                Spacer(minLength: 21)
+                Text(viewModel.currentHijriDate + (viewModel.selectedLanguage == "id" ? " H" : " AH"))
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 13)
+            .padding(.vertical, 10)
+
+            Divider().opacity(0.3)
+
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // Ramadan pinned on top
+                    eventRow(icon: "moon.stars.fill",
+                             title: L10n.ramadan(viewModel.selectedLanguage),
+                             value: viewModel.ramadanCountdownText)
+
+                    ForEach(viewModel.upcomingEvents) { event in
+                        eventRow(icon: "calendar.badge.clock",
+                                 title: event.title,
+                                 value: event.countdownText(lang: viewModel.selectedLanguage))
+                    }
+                }
+                .padding(.vertical, 5)
+            }
+        }
+        .frame(minWidth: 220, maxWidth: 288)   // adaptive: 178·φ max, shrinks on narrow panes
+        .frame(maxHeight: 377)           // 233 · φ — scrolls beyond this
+        .fixedSize(horizontal: false, vertical: true)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 13))
+        .overlay(
+            RoundedRectangle(cornerRadius: 13)
+                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.3), radius: 13, y: 5)
+    }
+
+    private func eventRow(icon: String, title: String, value: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundColor(.white.opacity(0.7))
+                .frame(width: 14)
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundColor(.white.opacity(0.9))
+                .lineLimit(1)
+                .truncationMode(.tail)
+            Spacer(minLength: 8)
+            Text(value)
+                .font(.system(size: 12, weight: .medium, design: .monospaced))
+                .foregroundColor(.white)
+                .monospacedDigit()
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 13)
+        .padding(.vertical, 6)
     }
 }

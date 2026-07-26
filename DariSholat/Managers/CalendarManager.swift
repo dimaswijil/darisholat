@@ -192,7 +192,6 @@ class CalendarManager: ObservableObject {
 
         let mapped: [CalendarEventItem] = nonAllDay
             .sorted { $0.startDate < $1.startDate }
-            .prefix(10) // Keep a reasonable buffer
             .map { event in
                 CalendarEventItem(
                     id: event.eventIdentifier ?? UUID().uuidString,

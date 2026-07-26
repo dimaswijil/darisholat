@@ -20,6 +20,32 @@ enum TodoStatus: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+// MARK: - Priority (for Notion-style classification)
+
+enum TodoPriority: String, Codable, CaseIterable, Identifiable {
+    case low
+    case medium
+    case high
+
+    var id: String { rawValue }
+
+    func title(_ lang: String) -> String {
+        switch self {
+        case .low:    return lang == "id" ? "Rendah" : "Low"
+        case .medium: return lang == "id" ? "Sedang" : "Medium"
+        case .high:   return lang == "id" ? "Tinggi" : "High"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .low:    return "arrow.down"
+        case .medium: return "arrow.right"
+        case .high:   return "arrow.up"
+        }
+    }
+}
+
 // MARK: - Folder (a list of tasks, switchable like Notion pages)
 
 struct TodoFolder: Codable, Identifiable, Equatable {
@@ -43,29 +69,48 @@ struct TodoItem: Codable, Identifiable, Equatable {
     var status: TodoStatus
     var folderID: UUID?
     let createdAt: Date
+    var emojiIcon: String?
+    var coverImageName: String?
+    var priority: TodoPriority
+    var timeRange: String?
+    var duration: String?
+    var location: String?
 
-    init(title: String, status: TodoStatus = .todo, folderID: UUID? = nil) {
+    init(title: String, status: TodoStatus = .todo, folderID: UUID? = nil, emojiIcon: String? = nil, coverImageName: String? = nil, priority: TodoPriority = .medium, timeRange: String? = nil, duration: String? = nil, location: String? = nil) {
         self.id = UUID()
         self.title = title
         self.notes = ""
         self.status = status
         self.folderID = folderID
         self.createdAt = Date()
+        self.emojiIcon = emojiIcon
+        self.coverImageName = coverImageName
+        self.priority = priority
+        self.timeRange = timeRange
+        self.duration = duration
+        self.location = location
     }
 
     // Backward compatible decoding: earlier versions stored `isDone: Bool`
-    // and had no `notes` / `folderID`.
+    // and had no `notes` / `folderID` / `emojiIcon` / `coverImageName` / `priority` / `timeRange` / `duration` / `location`.
     private enum CodingKeys: String, CodingKey {
-        case id, title, notes, status, folderID, createdAt, isDone
+        case id, title, notes, status, folderID, createdAt, isDone, emojiIcon, coverImageName, priority, timeRange, duration, location
     }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        id        = try c.decode(UUID.self, forKey: .id)
-        title     = try c.decode(String.self, forKey: .title)
-        notes     = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
-        folderID  = try c.decodeIfPresent(UUID.self, forKey: .folderID)
-        createdAt = try c.decode(Date.self, forKey: .createdAt)
+        id             = try c.decode(UUID.self, forKey: .id)
+        title          = try c.decode(String.self, forKey: .title)
+        notes          = try c.decodeIfPresent(String.self, forKey: .notes) ?? ""
+        folderID       = try c.decodeIfPresent(UUID.self, forKey: .folderID)
+        createdAt      = try c.decode(Date.self, forKey: .createdAt)
+        emojiIcon      = try c.decodeIfPresent(String.self, forKey: .emojiIcon)
+        coverImageName = try c.decodeIfPresent(String.self, forKey: .coverImageName)
+        priority       = try c.decodeIfPresent(TodoPriority.self, forKey: .priority) ?? .medium
+        timeRange      = try c.decodeIfPresent(String.self, forKey: .timeRange)
+        duration       = try c.decodeIfPresent(String.self, forKey: .duration)
+        location       = try c.decodeIfPresent(String.self, forKey: .location)
+        
         if let s = try c.decodeIfPresent(TodoStatus.self, forKey: .status) {
             status = s
         } else {
@@ -82,6 +127,12 @@ struct TodoItem: Codable, Identifiable, Equatable {
         try c.encode(status, forKey: .status)
         try c.encodeIfPresent(folderID, forKey: .folderID)
         try c.encode(createdAt, forKey: .createdAt)
+        try c.encodeIfPresent(emojiIcon, forKey: .emojiIcon)
+        try c.encodeIfPresent(coverImageName, forKey: .coverImageName)
+        try c.encode(priority, forKey: .priority)
+        try c.encodeIfPresent(timeRange, forKey: .timeRange)
+        try c.encodeIfPresent(duration, forKey: .duration)
+        try c.encodeIfPresent(location, forKey: .location)
     }
 }
 
@@ -162,6 +213,18 @@ class TodoManager: ObservableObject {
         save()
     }
 
+    /// Reorders: moves the dragged folder (by id string) to the position of
+    /// the target folder. Used by drag & drop on the folder chips.
+    func moveFolder(idString: String, before target: TodoFolder) {
+        guard let uuid = UUID(uuidString: idString),
+              let from = folders.firstIndex(where: { $0.id == uuid }),
+              let to = folders.firstIndex(where: { $0.id == target.id }),
+              from != to else { return }
+        let folder = folders.remove(at: from)
+        folders.insert(folder, at: to > from ? to : to)
+        saveFolders()
+    }
+
     // MARK: - Mutations
 
     /// Adds into the currently selected folder. Tasks always live in a
@@ -194,11 +257,66 @@ class TodoManager: ObservableObject {
         save()
     }
 
-    /// Moves by id string (drag & drop payload).
+    /// Moves a task by id string (drag & drop payload).
     func move(idString: String, to status: TodoStatus) {
         guard let uuid = UUID(uuidString: idString),
               let item = items.first(where: { $0.id == uuid }) else { return }
         move(item, to: status)
+    }
+
+    // MARK: - Reordering
+
+    func canMoveUp(_ item: TodoItem) -> Bool {
+        let colItems = items(in: item.status)
+        guard let idx = colItems.firstIndex(where: { $0.id == item.id }) else { return false }
+        return idx > 0
+    }
+
+    func canMoveDown(_ item: TodoItem) -> Bool {
+        let colItems = items(in: item.status)
+        guard let idx = colItems.firstIndex(where: { $0.id == item.id }) else { return false }
+        return idx < colItems.count - 1
+    }
+
+    /// Reorders a task within its column list by moving it up (towards top).
+    func moveUp(_ item: TodoItem) {
+        let colItems = items(in: item.status)
+        guard let colIdx = colItems.firstIndex(where: { $0.id == item.id }),
+              colIdx > 0 else { return }
+        let targetItem = colItems[colIdx - 1]
+        reorder(item: item, relativeTo: targetItem, placeAfter: false)
+    }
+
+    /// Reorders a task within its column list by moving it down (towards bottom).
+    func moveDown(_ item: TodoItem) {
+        let colItems = items(in: item.status)
+        guard let colIdx = colItems.firstIndex(where: { $0.id == item.id }),
+              colIdx < colItems.count - 1 else { return }
+        let targetItem = colItems[colIdx + 1]
+        reorder(item: item, relativeTo: targetItem, placeAfter: true)
+    }
+
+    /// Reorders `item` relative to `targetItem` in the main `items` array.
+    func reorder(item: TodoItem, relativeTo targetItem: TodoItem, placeAfter: Bool = false) {
+        guard let fromIdx = items.firstIndex(where: { $0.id == item.id }),
+              let toIdx = items.firstIndex(where: { $0.id == targetItem.id }),
+              fromIdx != toIdx else { return }
+        let moved = items.remove(at: fromIdx)
+        let newToIdx = items.firstIndex(where: { $0.id == targetItem.id }) ?? 0
+        let insertIndex = placeAfter ? newToIdx + 1 : newToIdx
+        items.insert(moved, at: min(max(insertIndex, 0), items.count))
+        save()
+    }
+
+    /// Moves/reorders a task by ID string (for drag & drop on another card).
+    func reorder(idString: String, relativeTo targetItem: TodoItem) {
+        guard let uuid = UUID(uuidString: idString),
+              let item = items.first(where: { $0.id == uuid }),
+              item.id != targetItem.id else { return }
+        if item.status != targetItem.status {
+            move(item, to: targetItem.status)
+        }
+        reorder(item: item, relativeTo: targetItem, placeAfter: false)
     }
 
     /// Quick check/uncheck: done ↔ todo.
@@ -206,12 +324,63 @@ class TodoManager: ObservableObject {
         move(item, to: item.status == .done ? .todo : .done)
     }
 
-    /// Edits title/notes from the detail sheet.
-    func update(_ item: TodoItem, title: String, notes: String) {
+    /// Edits all properties of a task from the detail sheet.
+    func update(
+        _ item: TodoItem,
+        title: String,
+        notes: String,
+        status: TodoStatus,
+        folderID: UUID?,
+        emojiIcon: String?,
+        coverImageName: String?,
+        priority: TodoPriority,
+        timeRange: String?,
+        duration: String?,
+        location: String?
+    ) {
         guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         items[idx].title = trimmed.isEmpty ? items[idx].title : trimmed
         items[idx].notes = notes
+        items[idx].status = status
+        items[idx].folderID = folderID
+        items[idx].emojiIcon = emojiIcon
+        items[idx].coverImageName = coverImageName
+        items[idx].priority = priority
+        items[idx].timeRange = timeRange
+        items[idx].duration = duration
+        items[idx].location = location
+        save()
+    }
+
+    func updateTitle(_ item: TodoItem, to title: String) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        items[idx].title = trimmed.isEmpty ? items[idx].title : trimmed
+        save()
+    }
+
+    func updateNotes(_ item: TodoItem, to notes: String) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[idx].notes = notes
+        save()
+    }
+
+    func updateTimeRange(_ item: TodoItem, to timeRange: String) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[idx].timeRange = timeRange
+        save()
+    }
+
+    func updateDuration(_ item: TodoItem, to duration: String) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[idx].duration = duration
+        save()
+    }
+
+    func updateLocation(_ item: TodoItem, to location: String) {
+        guard let idx = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[idx].location = location
         save()
     }
 

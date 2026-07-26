@@ -13,146 +13,8 @@ import Adhan
 import ServiceManagement
 import EventKit
 
-// MARK: - App Blur Style
+// MARK: - App Blur Style, Accent Color, Calculation Methods, and Models moved to Models/
 
-enum AppBlurStyle: String, CaseIterable, Identifiable {
-    case hud = "hud"
-    case popover = "popover"
-    case menu = "menu"
-    case sidebar = "sidebar"
-    case liquidGlass = "liquidGlass"
-    case custom = "custom"
-    
-    var id: String { rawValue }
-    
-    var displayName: String {
-        switch self {
-        case .hud: return "HUD (Dark Glass)"
-        case .popover: return "Popover (Light)"
-        case .menu: return "Menu (Standard)"
-        case .sidebar: return "Sidebar"
-        case .liquidGlass: return "Liquid Glass"
-        case .custom: return "Custom..."
-        }
-    }
-}
-
-// MARK: - Accent Color Preset
-
-enum AppAccentColor: String, CaseIterable, Identifiable {
-    case white  = "white"
-    case green  = "green"
-    case blue   = "blue"
-    case purple = "purple"
-    case orange = "orange"
-    case red    = "red"
-    case yellow = "yellow"
-
-    var id: String { rawValue }
-
-    var displayName: String {
-        switch self {
-        case .white:  return "White (Default)"
-        case .green:  return "Green"
-        case .blue:   return "Blue"
-        case .purple: return "Purple"
-        case .orange: return "Orange"
-        case .red:    return "Red"
-        case .yellow: return "Yellow"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .white:  return Color.white
-        case .green:  return Color(red: 0.196, green: 0.784, blue: 0.439) // original accent
-        case .blue:   return Color(red: 0.20, green: 0.50, blue: 0.95)
-        case .purple: return Color(red: 0.58, green: 0.34, blue: 0.92)
-        case .orange: return Color(red: 0.95, green: 0.55, blue: 0.20)
-        case .red:    return Color(red: 0.92, green: 0.28, blue: 0.28)
-        case .yellow: return Color.yellow
-        }
-    }
-
-    var swatchColor: Color {
-        color
-    }
-}
-
-// MARK: - Calculation Method Enum
-
-enum DariSholatMethod: String, CaseIterable, Identifiable {
-    case kemenag = "kemenag"
-    case mwl = "mwl"
-    case isna = "isna"
-    case ummAlQura = "ummalqura"
-    case egyptian = "egyptian"
-    case singapore = "singapore"
-    case turkey = "turkey"
-    case tehran = "tehran"
-    case karachi = "karachi"
-    case dubai = "dubai"
-    case kuwait = "kuwait"
-    case qatar = "qatar"
-
-    var id: String { rawValue }
-
-    var displayName: String {
-        switch self {
-        case .kemenag:   return "Kemenag RI"
-        case .mwl:       return "Muslim World League"
-        case .isna:      return "ISNA (North America)"
-        case .ummAlQura: return "Umm al-Qura (Makkah)"
-        case .egyptian:  return "Egyptian Authority"
-        case .singapore: return "Singapore (MUIS)"
-        case .turkey:    return "Diyanet (Turkey)"
-        case .tehran:    return "Tehran"
-        case .karachi:   return "Karachi"
-        case .dubai:     return "Dubai (AWQAF)"
-        case .kuwait:    return "Kuwait"
-        case .qatar:     return "Qatar"
-        }
-    }
-
-    var params: CalculationParameters {
-        switch self {
-        case .kemenag:
-            var p = CalculationMethod.other.params
-            p.fajrAngle = 20.0
-            p.ishaAngle = 18.0
-            return p
-        case .mwl:       return CalculationMethod.muslimWorldLeague.params
-        case .isna:      return CalculationMethod.northAmerica.params
-        case .ummAlQura: return CalculationMethod.ummAlQura.params
-        case .egyptian:  return CalculationMethod.egyptian.params
-        case .singapore: return CalculationMethod.singapore.params
-        case .turkey:    return CalculationMethod.turkey.params
-        case .tehran:    return CalculationMethod.tehran.params
-        case .karachi:   return CalculationMethod.karachi.params
-        case .dubai:     return CalculationMethod.dubai.params
-        case .kuwait:    return CalculationMethod.kuwait.params
-        case .qatar:     return CalculationMethod.qatar.params
-        }
-    }
-}
-
-// MARK: - Indonesian City
-
-struct IndonesianCity: Identifiable, Hashable {
-    let id = UUID()
-    let name: String
-    let latitude: Double
-    let longitude: Double
-}
-
-// MARK: - Prayer Schedule Item
-
-struct PrayerScheduleItem: Identifiable {
-    let id = UUID()
-    let prayer: Prayer
-    let name: String
-    let time: Date
-}
 
 // MARK: - PrayerTimeViewModel
 
@@ -358,7 +220,11 @@ class PrayerTimeViewModel: ObservableObject {
             guard let self else { return }
             self.refreshPrayerTimes()
             self.updateRamadanCountdown()
-            MainWindowManager.shared.show(tab: .todo, viewModel: self)
+            // Slight delay so the wake transition settles, then take over the
+            // screen — in front of whatever app was active before sleep.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                MainWindowManager.shared.show(tab: .todo, viewModel: self, forceFront: true)
+            }
         }
     }
 
@@ -748,8 +614,8 @@ class PrayerTimeViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] events in
                 guard let self = self else { return }
-                // Show max 3 upcoming events
-                self.upcomingEvents = Array(events.prefix(3))
+                // Show all upcoming events (list scrolls if long)
+                self.upcomingEvents = events
                 self.updateCalendarCountdown()
             }
 

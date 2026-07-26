@@ -24,6 +24,15 @@
 		DA000200000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000C /* Assets.xcassets */; };
 		DA000200000000000000000D /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = DA0009000000000000000002 /* Adhan */; };
 		DA000200000000000000000E /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA000100000000000000000E /* CalendarManager.swift */; };
+		DA0002000000000000000010 /* PrayerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000010 /* PrayerModels.swift */; };
+		DA0002000000000000000011 /* AppThemeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000011 /* AppThemeModels.swift */; };
+		DA0002000000000000000012 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000012 /* DesignTokens.swift */; };
+		DA0002000000000000000013 /* PrayerTimeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000013 /* PrayerTimeRow.swift */; };
+		DA0002000000000000000014 /* CalendarEventsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000014 /* CalendarEventsSectionView.swift */; };
+		DA0002000000000000000015 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000015 /* TaskDetailView.swift */; };
+		DA0002000000000000000016 /* KanbanBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000016 /* KanbanBoardView.swift */; };
+		DA0002000000000000000017 /* HeaderEventsInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000017 /* HeaderEventsInfoView.swift */; };
+		DA0002000000000000000018 /* RundownTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0001000000000000000018 /* RundownTableView.swift */; };
 		E100DB34F095CF00977F54D7 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD5DF6C01EA59C5D44A50A9 /* MainWindowView.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +68,15 @@
 		DA000100000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA000100000000000000000D /* DariSholat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DariSholat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA000100000000000000000E /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
+		DA0001000000000000000010 /* PrayerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerModels.swift; sourceTree = "<group>"; };
+		DA0001000000000000000011 /* AppThemeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemeModels.swift; sourceTree = "<group>"; };
+		DA0001000000000000000012 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
+		DA0001000000000000000013 /* PrayerTimeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeRow.swift; sourceTree = "<group>"; };
+		DA0001000000000000000014 /* CalendarEventsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEventsSectionView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000015 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000016 /* KanbanBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000017 /* HeaderEventsInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderEventsInfoView.swift; sourceTree = "<group>"; };
+		DA0001000000000000000018 /* RundownTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RundownTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +120,10 @@
 			children = (
 				9CD5DF6C01EA59C5D44A50A9 /* MainWindowView.swift */,
 				7B094575D3E32DE3DB8DA3E7 /* TodoListView.swift */,
+				DA0001000000000000000015 /* TaskDetailView.swift */,
+				DA0001000000000000000016 /* KanbanBoardView.swift */,
+				DA0001000000000000000017 /* HeaderEventsInfoView.swift */,
+				DA0001000000000000000018 /* RundownTableView.swift */,
 			);
 			path = MainWindow;
 			sourceTree = "<group>";
@@ -143,6 +165,8 @@
 				DA0001000000000000000008 /* AboutView.swift */,
 				DA0001000000000000000007 /* SettingsView.swift */,
 				DA0001000000000000000006 /* VisualEffectView.swift */,
+				DA0001000000000000000013 /* PrayerTimeRow.swift */,
+				DA0001000000000000000014 /* CalendarEventsSectionView.swift */,
 				41B483DF39EFA38AC5CBAB4C /* MainWindow */,
 			);
 			path = Views;
@@ -164,6 +188,7 @@
 				566A39F01F959571D7744EBA /* App */,
 				D10AE3BCBDF57A953D7DBCE5 /* Views */,
 				337A1A83864F77435A867ABB /* ViewModels */,
+				DA0003000000000000000010 /* Models */,
 				9BCC6A5680B6ED6300FBCFE0 /* Managers */,
 				F28ADE1AEEA1FE2CF716D91E /* Utils */,
 				B6684A283C0AEFD3237EC6C0 /* Resources */,
@@ -187,10 +212,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DA0003000000000000000010 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DA0001000000000000000010 /* PrayerModels.swift */,
+				DA0001000000000000000011 /* AppThemeModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		F28ADE1AEEA1FE2CF716D91E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				DA0001000000000000000009 /* Localization.swift */,
+				DA0001000000000000000012 /* DesignTokens.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -312,7 +347,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA0002000000000000000001 /* DariSholatApp.swift in Sources */,
-				DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */,
 				DA0002000000000000000004 /* LocationManager.swift in Sources */,
 				DA0002000000000000000005 /* NotificationManager.swift in Sources */,
 				DA0002000000000000000006 /* VisualEffectView.swift in Sources */,
@@ -320,11 +354,21 @@
 				DA0002000000000000000009 /* Localization.swift in Sources */,
 				DA000200000000000000000E /* CalendarManager.swift in Sources */,
 				98AF4B5409339688416B68EB /* TodoManager.swift in Sources */,
+				DA0002000000000000000003 /* PrayerTimeViewModel.swift in Sources */,
 				5B674C2D37FC1121208D5CB5 /* MainWindowManager.swift in Sources */,
 				E100DB34F095CF00977F54D7 /* MainWindowView.swift in Sources */,
 				D3E4B7296CAE9DA77BD1C36D /* TodoListView.swift in Sources */,
 				ABFCAC0BF753E2266C7E0924 /* ContentView.swift in Sources */,
 				457B38BBC0129CA1DD569439 /* AboutView.swift in Sources */,
+				DA0002000000000000000010 /* PrayerModels.swift in Sources */,
+				DA0002000000000000000011 /* AppThemeModels.swift in Sources */,
+				DA0002000000000000000012 /* DesignTokens.swift in Sources */,
+				DA0002000000000000000013 /* PrayerTimeRow.swift in Sources */,
+				DA0002000000000000000014 /* CalendarEventsSectionView.swift in Sources */,
+				DA0002000000000000000015 /* TaskDetailView.swift in Sources */,
+				DA0002000000000000000016 /* KanbanBoardView.swift in Sources */,
+				DA0002000000000000000017 /* HeaderEventsInfoView.swift in Sources */,
+				DA0002000000000000000018 /* RundownTableView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,7 +393,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.7;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = wijil.DariSholatUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -371,7 +415,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.7;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = wijil.DariSholatUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -399,7 +443,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.darisholat.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -423,7 +467,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.darisholat.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

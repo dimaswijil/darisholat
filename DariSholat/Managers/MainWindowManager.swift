@@ -42,7 +42,9 @@ final class MainWindowManager: NSObject, ObservableObject {
     }
 
     /// Opens (or focuses) the desktop window on the given tab.
-    func show(tab: MainWindowTab, viewModel: PrayerTimeViewModel) {
+    /// `forceFront: true` (wake-from-sleep) steals focus aggressively: the
+    /// window jumps in front of whatever app is active (Zoom, Spotify, …).
+    func show(tab: MainWindowTab, viewModel: PrayerTimeViewModel, forceFront: Bool = false) {
         selectedTab = tab
 
         // The app is LSUIElement (menu bar only). While the desktop window is
@@ -61,20 +63,19 @@ final class MainWindowManager: NSObject, ObservableObject {
 
             let win = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 860, height: 540),
-                // NOTE: no .fullSizeContentView. The crash report points at
-                // NSThemeFrame._opaqueFullSizeContentViewRegionWithClipRect —
-                // macOS 13 recomputes the draggable titlebar region from the
-                // SwiftUI hierarchy on every animation frame, loops constraint
-                // invalidation, and eventually raises (SIGILL via
-                // _crashOnException). Keeping content below the titlebar
-                // avoids that code path entirely.
-                styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                // .fullSizeContentView lets wallpaper pages paint under the
+                // titlebar. Safe now: the old constraint-loop crash came from
+                // insertion-based SwiftUI transitions, which are all gone
+                // (sidebar/tab/palette animate width & opacity only), plus
+                // sizingOptions=[] and the autoresizing container below.
+                styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false
             )
             win.title = "DariSholat"
             win.titlebarAppearsTransparent = true
             win.titleVisibility = .hidden
+            win.setFrameAutosaveName("MainWindow")
             win.minSize = NSSize(width: 700, height: 440)
 
             // Isolate SwiftUI from the window's Auto Layout entirely: the
@@ -99,6 +100,37 @@ final class MainWindowManager: NSObject, ObservableObject {
         // "ordered front from a non-active application" warning.
         NSApp.activate(ignoringOtherApps: true)
         window?.makeKeyAndOrderFront(nil)
+
+        // Close MenuBarExtra popup window if open
+        for win in NSApp.windows {
+            let className = String(describing: type(of: win))
+            if win != window && (className.contains("MenuBarExtra") || (win.title.isEmpty && win.isVisible)) {
+                win.orderOut(nil)
+            }
+        }
+
+        if forceFront, let win = window {
+            // Wake-from-sleep: shove the window in front of EVERYTHING once.
+            // No level games — elevated levels confused Mission Control and
+            // normal click-to-raise (the window fell behind and clicking it
+            // couldn't bring it back). A plain aggressive activation sequence,
+            // repeated a few times while other apps restore, is enough.
+            win.collectionBehavior.insert(.moveToActiveSpace)
+            win.orderFrontRegardless()
+            win.makeKey()
+            NSApp.activate(ignoringOtherApps: true)
+
+            // Re-assert a few times — wake restores other apps' windows over
+            // several runloop turns, so a single shove can get buried again.
+            for delay in [0.3, 0.8, 1.5] {
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak win] in
+                    guard let win else { return }
+                    win.orderFrontRegardless()
+                    win.makeKey()
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
+        }
     }
 }
 
@@ -112,5 +144,20 @@ extension MainWindowManager: NSWindowDelegate {
         window?.contentView = nil
         window = nil
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    /// Clicking the window (or picking it in Mission Control) must always
+    /// bring it forward — activate the app so the click isn't swallowed
+    /// while another app is frontmost.
+    func windowDidBecomeKey(_ notification: Notification) {
+        window?.level = .normal
+        NSApp.activate(ignoringOtherApps: true)
+        window?.orderFrontRegardless()
+    }
+
+    /// User moved to another app/window — make sure we're back at the
+    /// normal level so we never hover over their work.
+    func windowDidResignKey(_ notification: Notification) {
+        window?.level = .normal
     }
 }
