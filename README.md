@@ -18,7 +18,6 @@
 ## Daftar Isi
 
 - [Fitur Utama](#fitur-utama)
-- [Tampilan](#tampilan)
 - [Instalasi](#instalasi)
 - [Dokumentasi](#dokumentasi)
 - [Kontribusi](#kontribusi)
@@ -39,17 +38,6 @@
 | 🌍 **9 Bahasa** | Indonesia, English, العربية, Türkçe, 日本語, Қазақша, فارسی, اردو, Melayu |
 | 🎨 **Tema & Aksen** | Warna aksen kustom, wallpaper pilihan, blur ala Control Center |
 | ⚙️ **Metode Perhitungan** | Kemenag RI (default), MWL, ISNA, dan standar global lainnya |
-
----
-
-## Tampilan
-
-| | |
-|---|---|
-| ![Popover Menu Bar](assets/screenshots/popover_view.png) | ![Beranda Desktop](assets/screenshots/main_view.png) |
-| *Popover menu bar — jadwal sholat & events* | *Beranda — tampilan desktop dengan wallpaper pilihan* |
-| ![To-Doing Board](assets/screenshots/todoing_view.png) | |
-| *To-Doing — papan kanban dengan folder & kalender Hijriah* | |
 
 ---
 
