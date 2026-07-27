@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
-  <img src="https://img.shields.io/badge/Versi-2.0.0-blue?style=flat-square" alt="v2.0.0">
+  <img src="https://img.shields.io/badge/Versi-1.2.0-blue?style=flat-square" alt="v1.2.0">
 </p>
 
 ---
@@ -32,7 +32,7 @@
 |---|---|
 | 🕒 **Jadwal Sholat Lengkap** | Subuh, Syuruq, Dzuhur, Ashar, Maghrib, Isya — dengan countdown real-time di menu bar (`Fajr -40:32`) |
 | 📍 **Lokasi Otomatis / Manual** | Deteksi GPS otomatis, atau pilih manual dari 18 kota besar Indonesia |
-| ✅ **To-Doing (Kanban Board & Rundown)** | Papan tugas Notion-style dengan folder, rundown acara, drag & drop, dan catatan |
+| ✅ **To-Doing (Kanban Board)** | Papan tugas Todo → In Progress → Done dengan folder, drag & drop, catatan ala Notion, dan quote harian |
 | 🌙 **Wake from Sleep** | Window To-Doing otomatis tampil saat Mac bangun dari sleep — mulai hari dengan rencana |
 | 📅 **Kalender Apple + Hijriah** | Countdown ke semua event kalender dan tanggal Hijriah hari ini |
 | 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba |
@@ -46,10 +46,10 @@
 
 | | |
 |---|---|
-| ![Popover](assets/screenshots/popover_view.png) | ![Main Home](assets/screenshots/main_view.png) |
-| *Popover Menu Bar — jadwal sholat & events* | *Main Window Home — wallpaper & event card* |
-| ![To-Doing](assets/screenshots/todoing_view.png) | |
-| *To-Doing — papan kanban Notion-style* | |
+| ![To-Doing](assets/screenshots/todoing_view.png) | ![Main](assets/screenshots/main_view.png) |
+| *To-Doing — papan kanban dengan folder & kalender Hijriah* | *Popover menu bar — jadwal sholat & events* |
+| ![Settings](assets/screenshots/settings_view.png) | ![About](assets/screenshots/about_view.png) |
+| *Pengaturan — tema, metode perhitungan, bahasa* | *About — di atas wallpaper pilihan* |
 
 ---
 
