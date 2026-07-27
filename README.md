@@ -3,10 +3,6 @@
 > Aplikasi menu bar macOS yang ringan dan elegan: waktu sholat, kalender Hijriah, dan papan tugas To-Doing — langsung dari desktop kamu.
 
 <p align="center">
-  <img src="assets/screenshots/main_view.png" width="600" alt="DariSholat Preview">
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
@@ -18,7 +14,6 @@
 ## Daftar Isi
 
 - [Fitur Utama](#fitur-utama)
-- [Tampilan](#tampilan)
 - [Instalasi](#instalasi)
 - [Dokumentasi](#dokumentasi)
 - [Kontribusi](#kontribusi)
@@ -39,17 +34,6 @@
 | 🌍 **9 Bahasa** | Indonesia, English, العربية, Türkçe, 日本語, Қазақша, فارسی, اردو, Melayu |
 | 🎨 **Tema & Aksen** | Warna aksen kustom, wallpaper pilihan, blur ala Control Center |
 | ⚙️ **Metode Perhitungan** | Kemenag RI (default), MWL, ISNA, dan standar global lainnya |
-
----
-
-## Tampilan
-
-| | |
-|---|---|
-| ![Menu Bar Popover](assets/screenshots/main_view.png) | ![To-Doing](assets/screenshots/todoing_view.png) |
-| *Popover menu bar — jadwal sholat & events* | *To-Doing — papan kanban dengan folder & kalender Hijriah* |
-| ![Home Wallpaper](assets/screenshots/home_view.png) | ![Settings](assets/screenshots/settings_view.png) |
-| *Home — wallpaper pilihan & ringkasan events* | *Pengaturan — tema, metode perhitungan, bahasa* |
 
 ---
 
