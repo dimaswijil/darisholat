@@ -3,7 +3,7 @@
 > Aplikasi menu bar macOS yang ringan dan elegan: waktu sholat, kalender Hijriah, dan papan tugas To-Doing — langsung dari desktop kamu.
 
 <p align="center">
-  <img src="assets/screenshots/todoing_view.png" width="600" alt="DariSholat Preview">
+  <img src="assets/screenshots/assets/screenshots/popover_view.png" width="600" alt="DariSholat Preview">
 </p>
 
 <p align="center">
@@ -47,7 +47,7 @@
 | | |
 |---|---|
 | ![To-Doing](assets/screenshots/todoing_view.png) | ![Main](assets/screenshots/main_view.png) |
-| *To-Doing — papan kanban dengan folder & kalender Hijriah* | *Popover menu bar — jadwal sholat & events* |
+| *To-Doing — papan kanban dengan folder & kalender Hijriah* | *Menu events* |
 | ![Settings](assets/screenshots/settings_view.png) | ![About](assets/screenshots/about_view.png) |
 | *Pengaturan — tema, metode perhitungan, bahasa* | *About — di atas wallpaper pilihan* |
 
