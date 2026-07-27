@@ -3,6 +3,10 @@
 > Aplikasi menu bar macOS yang ringan dan elegan: waktu sholat, kalender Hijriah, dan papan tugas To-Doing — langsung dari desktop kamu.
 
 <p align="center">
+  <img src="assets/screenshots/popover_view.png" width="600" alt="DariSholat Preview">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
@@ -14,6 +18,7 @@
 ## Daftar Isi
 
 - [Fitur Utama](#fitur-utama)
+- [Tampilan](#tampilan)
 - [Instalasi](#instalasi)
 - [Dokumentasi](#dokumentasi)
 - [Kontribusi](#kontribusi)
@@ -27,13 +32,24 @@
 |---|---|
 | 🕒 **Jadwal Sholat Lengkap** | Subuh, Syuruq, Dzuhur, Ashar, Maghrib, Isya — dengan countdown real-time di menu bar (`Fajr -40:32`) |
 | 📍 **Lokasi Otomatis / Manual** | Deteksi GPS otomatis, atau pilih manual dari 18 kota besar Indonesia |
-| ✅ **To-Doing (Kanban Board)** | Papan tugas Todo → In Progress → Done dengan folder, drag & drop, catatan ala Notion, dan quote harian |
+| ✅ **To-Doing (Kanban Board & Rundown)** | Papan tugas Todo → In Progress → Done dengan folder, drag & drop, catatan ala Notion, dan rundown acara |
 | 🌙 **Wake from Sleep** | Window To-Doing otomatis tampil saat Mac bangun dari sleep — mulai hari dengan rencana |
 | 📅 **Kalender Apple + Hijriah** | Countdown ke semua event kalender dan tanggal Hijriah hari ini |
 | 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba |
 | 🌍 **9 Bahasa** | Indonesia, English, العربية, Türkçe, 日本語, Қазақша, فارسی, اردو, Melayu |
 | 🎨 **Tema & Aksen** | Warna aksen kustom, wallpaper pilihan, blur ala Control Center |
 | ⚙️ **Metode Perhitungan** | Kemenag RI (default), MWL, ISNA, dan standar global lainnya |
+
+---
+
+## Tampilan
+
+| | |
+|---|---|
+| ![Popover](assets/screenshots/popover_view.png) | ![To-Doing](assets/screenshots/todoing_view.png) |
+| *Popover Menu Bar — Waktu Sholat & Kalender Hijriah* | *To-Doing — Papan Kanban & Rundown Acara* |
+| ![Home](assets/screenshots/home_view.png) | ![Main](assets/screenshots/main_view.png) |
+| *Beranda Desktop — Wallpaper pilihan & Events* | *Tampilan Desktop Utama* |
 
 ---
 
