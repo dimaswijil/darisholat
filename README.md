@@ -3,7 +3,7 @@
 > Aplikasi menu bar macOS yang ringan dan elegan: waktu sholat, kalender Hijriah, dan papan tugas To-Doing — langsung dari desktop kamu.
 
 <p align="center">
-  <img src="assets/screenshots/popover_view.png" width="600" alt="DariSholat Preview">
+  <img src="assets/screenshots/todoing_view.png" width="600" alt="DariSholat Preview">
 </p>
 
 <p align="center">
@@ -32,7 +32,7 @@
 |---|---|
 | 🕒 **Jadwal Sholat Lengkap** | Subuh, Syuruq, Dzuhur, Ashar, Maghrib, Isya — dengan countdown real-time di menu bar (`Fajr -40:32`) |
 | 📍 **Lokasi Otomatis / Manual** | Deteksi GPS otomatis, atau pilih manual dari 18 kota besar Indonesia |
-| ✅ **To-Doing (Kanban Board & Rundown)** | Papan tugas Todo → In Progress → Done dengan folder, drag & drop, catatan ala Notion, dan rundown acara |
+| ✅ **To-Doing (Kanban Board & Rundown)** | Papan tugas Notion-style dengan folder, rundown acara, drag & drop, dan catatan |
 | 🌙 **Wake from Sleep** | Window To-Doing otomatis tampil saat Mac bangun dari sleep — mulai hari dengan rencana |
 | 📅 **Kalender Apple + Hijriah** | Countdown ke semua event kalender dan tanggal Hijriah hari ini |
 | 🔔 **Notifikasi Sholat** | Pengingat otomatis saat waktu sholat tiba |
@@ -46,10 +46,10 @@
 
 | | |
 |---|---|
-| ![Popover](assets/screenshots/popover_view.png) | ![To-Doing](assets/screenshots/todoing_view.png) |
-| *Popover Menu Bar — Waktu Sholat & Kalender Hijriah* | *To-Doing — Papan Kanban & Rundown Acara* |
-| ![Home](assets/screenshots/home_view.png) | |
-| *Beranda Desktop — Wallpaper pilihan & Events* | |
+| ![Popover](assets/screenshots/popover_view.png) | ![Main Home](assets/screenshots/main_view.png) |
+| *Popover Menu Bar — jadwal sholat & events* | *Main Window Home — wallpaper & event card* |
+| ![To-Doing](assets/screenshots/todoing_view.png) | |
+| *To-Doing — papan kanban Notion-style* | |
 
 ---
 
