@@ -48,8 +48,8 @@
 |---|---|
 | ![Popover](assets/screenshots/popover_view.png) | ![To-Doing](assets/screenshots/todoing_view.png) |
 | *Popover Menu Bar — Waktu Sholat & Kalender Hijriah* | *To-Doing — Papan Kanban & Rundown Acara* |
-| ![Home](assets/screenshots/home_view.png) | ![Main](assets/screenshots/main_view.png) |
-| *Beranda Desktop — Wallpaper pilihan & Events* | *Tampilan Desktop Utama* |
+| ![Home](assets/screenshots/home_view.png) | |
+| *Beranda Desktop — Wallpaper pilihan & Events* | |
 
 ---
 
