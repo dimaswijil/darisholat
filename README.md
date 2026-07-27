@@ -3,14 +3,14 @@
 > Aplikasi menu bar macOS yang ringan dan elegan: waktu sholat, kalender Hijriah, dan papan tugas To-Doing — langsung dari desktop kamu.
 
 <p align="center">
-  <img src="assets/screenshots/assets/screenshots/popover_view.png" width="700" alt="DariSholat Preview">
+  <img src="assets/screenshots/popover_view.png" width="600" alt="DariSholat Preview">
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%2013%2B-black?style=flat-square&logo=apple" alt="macOS 13+">
   <img src="https://img.shields.io/badge/Bahasa-Swift-orange?style=flat-square&logo=swift" alt="Swift">
   <img src="https://img.shields.io/badge/Harga-Gratis-brightgreen?style=flat-square" alt="Gratis">
-  <img src="https://img.shields.io/badge/Versi-1.2.0-blue?style=flat-square" alt="v1.2.0">
+  <img src="https://img.shields.io/badge/Versi-2.0.0-blue?style=flat-square" alt="v2.0.0">
 </p>
 
 ---
@@ -46,10 +46,10 @@
 
 | | |
 |---|---|
-| ![To-Doing](assets/screenshots/todoing_view.png) | ![Main](assets/screenshots/main_view.png) |
-| *To-Doing — papan kanban dengan folder & kalender Hijriah* | *Menu events* |
-| ![Settings](assets/screenshots/settings_view.png) | ![About](assets/screenshots/about_view.png) |
-| *Pengaturan — tema, metode perhitungan, bahasa* | *About — di atas wallpaper pilihan* |
+| ![Popover Menu Bar](assets/screenshots/popover_view.png) | ![Main Window](assets/screenshots/main_view.png) |
+| *Popover menu bar — jadwal sholat & events* | *Beranda — wallpaper & countdown events* |
+| ![To-Doing Board](assets/screenshots/todoing_view.png) | ![Settings](assets/screenshots/settings_view.png) |
+| *To-Doing — papan kanban & rundown acara* | *Pengaturan — tema, metode & lokasi* |
 
 ---
 
